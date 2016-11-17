@@ -514,16 +514,14 @@
                                                        handler:^(UIAlertAction * action) {
                                                            
                                                            [alert dismissViewControllerAnimated:YES completion:nil];
-                                                           
+                                                           [self.startButton setTitle:@"START" forState:UIControlStateNormal];
+
                                                        }];
         
         [alert addAction:cancel];
         
         [self presentViewController:alert animated:YES completion:nil];
     });
-    
-    
-    [self.startButton setTitle:@"START" forState:UIControlStateNormal];
 }
 
 #pragma mark RLLoginProtocol
