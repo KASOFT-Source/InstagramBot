@@ -22,6 +22,8 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
+    
+    self.likeIcon.layer.borderColor = [UIColor lightGrayColor].CGColor;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -34,6 +36,7 @@
     
     _media = media;
     
+    self.likeIcon.hidden = !media.likeStatus;
     [self.instagramImageView hnk_setImageFromURL:[NSURL URLWithString:media.imageURL]];
 
 }

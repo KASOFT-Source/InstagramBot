@@ -20,8 +20,6 @@
 #define kLIKEPHOTOS 2
 #define kMAXLIKEPHOTOS 5
 
-#define kLOOP NO
-
 @interface RLHomeViewController () <RLLoginProtocol, RLCreateListUserProtocol,UITableViewDelegate, UITableViewDataSource>
 
 #pragma mark Properties
@@ -53,7 +51,8 @@
 
 @property (nonatomic) NSUInteger timeInterval;
 @property (nonatomic) NSUInteger likePhotoNumber;
-@property (nonatomic) BOOL loop;
+@property (nonatomic) NSInteger processingPosition;
+
 @property (nonatomic) RLPackageType package;
 
 #pragma mark IBAction
@@ -62,7 +61,6 @@
 - (IBAction)upgradeButtonClick:(id)sender;
 - (IBAction)saveUsersButtonClick:(id)sender;
 - (IBAction)loadUsersButtonClick:(id)sender;
-- (IBAction)loopButtonClick:(id)sender;
 - (IBAction)subIntervalButtonClick:(id)sender;
 - (IBAction)addIntervalButtonClick:(id)sender;
 - (IBAction)subLikePhotosButtonClick:(id)sender;
@@ -90,6 +88,7 @@
     self.viewerTableView.rowHeight = UITableViewAutomaticDimension;
 
     self.package = RLPackageType1;
+    self.processingPosition = -1;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -113,7 +112,6 @@
 {
     self.timeInterval = kTIMEINTERVAL;
     self.likePhotoNumber = kLIKEPHOTOS;
-    self.loop = kLOOP;
 }
 
 - (void)loadPurchasePackage;
@@ -209,6 +207,12 @@
             RLUser *user = self.userList[indexPath.row - 1];
             
             cell.nameLabel.text = user.userName;
+            if (indexPath.row == self.processingPosition + 1) {
+                cell.contentView.backgroundColor = [UIColor yellowColor];
+            }
+            else {
+                cell.contentView.backgroundColor = RGB(42, 56, 69, 1);
+            }
             
             if (user.like == YES) {
                 cell.selectedIcon.hidden = NO;
@@ -252,7 +256,6 @@
             // Get the account of user
             RLUser *user = self.userList[indexPath.row - 1];
             
-
             // Show Instagram page of user.
             NSString *userId = [self getUserIdWithName: user.userName];
             
@@ -266,13 +269,6 @@
                 
                 // Reload viewer table with data
                 [self.viewerTableView reloadData];
-                
-                for (int i = 0; i < MAX(kLIKEPHOTOS, self.mediaList.count); i++) {
-                    RLInstagramMedia *media = [self.mediaList objectAtIndex: i];
-                    [self likeMediaId:media.mediaId];
-                    [NSThread sleepForTimeInterval:3.0f];
-                }
-
             }
             else {
                 
@@ -292,6 +288,61 @@
     }
 }
 
+- (void)likeUserAtPosition:(NSUInteger)position
+{
+    RLUser *user = self.userList[position];
+    
+    // Show Instagram page of user.
+    NSString *userId = [self getUserIdWithName: user.userName];
+    self.processingPosition = position;
+
+    if (userId) {
+
+        // Get the media user list
+        NSArray *mediaArray = [self getMediaOfUserWithId:userId];
+        self.mediaList = mediaArray;
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Reload viewer table with data
+            
+            self.instegramViewerNameLabel.text = user.userName;
+
+            [self.viewerTableView reloadData];
+            [self.usersTableView reloadData];
+        });
+
+        for (int i = 0; i < MAX(self.likePhotoNumber, self.mediaList.count); i++) {
+            RLInstagramMedia *media = [self.mediaList objectAtIndex: i];
+            [self likeMediaId:media.mediaId];
+            
+            // Update status of the viewer
+            media.likeStatus = true;
+            if (i == MAX(self.likePhotoNumber, self.mediaList.count) - 1) {
+                user.like = YES;
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.viewerTableView reloadData];
+            });
+
+            [NSThread sleepForTimeInterval:self.timeInterval];
+        }
+        
+    }
+    else {
+        
+        user.invalid = YES;
+        self.mediaList = nil;
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.instegramViewerNameLabel.text = @"Un-correct user";
+            
+            [self.viewerTableView reloadData];
+            [self.usersTableView reloadData];
+        });
+    }
+}
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"CreateNewListSegue"]) {
@@ -299,17 +350,6 @@
         controller.delegate = self;
     }
 }
-
-//- (NSString *)loadInstagramUserWithName:(NSString *)userName {
-//    
-//    NSString *userId = [self getUserIdWithName: userName];
-//    if (userId) {
-//        
-//        NSArray *mediaArray = [self getMediaOfUserWithId:userId];
-//        self.mediaList = mediaArray;
-//        [self.viewerTableView reloadData];
-//    }
-//}
 
 #pragma mark RLCreateListUserProtocol
 - (void)createUserListWithData:(NSArray *)users;
@@ -380,19 +420,6 @@
 - (IBAction)loadUsersButtonClick:(id)sender {
 }
 
-- (IBAction)loopButtonClick:(id)sender {
-    
-    self.loop = !self.loop;
-    
-    if (self.loop == NO) {
-        [self.loopButton setImage:[UIImage imageNamed:@"icon_check_white"] forState:UIControlStateNormal];
-    }
-    else {
-        [self.loopButton setImage:nil forState:UIControlStateNormal];
-
-    }
-}
-
 - (IBAction)subIntervalButtonClick:(id)sender {
 
     self.timeInterval -= 1;
@@ -450,10 +477,54 @@
 - (IBAction)startButtonClick:(id)sender {
     
     // TODO: start check like for all account.
-    
     // When finish -> show the finish message.
+    
+    UIButton *button = (UIButton *)sender;
+    if ([button.titleLabel.text isEqualToString:@"START"]) {
+        [button setTitle:@"PAUSE" forState:UIControlStateNormal];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+            for (int i = 0; i < self.userList.count; i++) {
+                [self likeUserAtPosition:i];
+            }
+
+            [self showDoneMessage];
+            
+        });
+    }
+    else {
+        [button setTitle:@"START" forState:UIControlStateNormal];
+    }
 }
 
+- (void)showDoneMessage;
+{
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Reload viewer table with data
+        // Show Done message
+        
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Message"
+                                                                       message:@"Done"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"OK"
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action) {
+                                                           
+                                                           [alert dismissViewControllerAnimated:YES completion:nil];
+                                                           
+                                                       }];
+        
+        [alert addAction:cancel];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+    });
+    
+    
+    [self.startButton setTitle:@"START" forState:UIControlStateNormal];
+}
 
 #pragma mark RLLoginProtocol
 - (void)loginFishedWithToken:(NSString *)token;
@@ -545,8 +616,12 @@
     // Just like and don't care about the resul.
     [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
     
-//    NSData *responseData = [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
-//    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
+    
+    NSLog(@"Response: %@", dict);
+    
+    
     
 }
 @end

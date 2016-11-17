@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSString *imageURL;
 @property (nonatomic, strong) NSString *caption;
 @property (nonatomic) NSUInteger likeCount;
+@property (nonatomic) BOOL likeStatus;
 
 - (id)initWithJson:(NSDictionary *)dict;
 
