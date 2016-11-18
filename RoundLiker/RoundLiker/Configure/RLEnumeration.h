@@ -8,3 +8,8 @@ typedef NS_ENUM(NSInteger, RLPackageType) {
     RLPackageType4
 };
 
+typedef NS_ENUM(NSInteger, RLLikeStatus) {
+    RLLikeStatusNone = 0,
+    RLLikeStatusDone,
+    RLLikeStatusFail
+};

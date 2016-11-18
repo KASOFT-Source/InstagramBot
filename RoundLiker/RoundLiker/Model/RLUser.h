@@ -11,6 +11,7 @@
 @interface RLUser : NSObject
 
 @property (nonatomic, strong) NSString *userName;
+@property (nonatomic, strong) NSString *userId;
 @property (nonatomic) BOOL like;
 @property (nonatomic) BOOL invalid;
 

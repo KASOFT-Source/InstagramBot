@@ -137,7 +137,7 @@
                                                             </constraints>
                                                         </imageView>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create New List" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tml-JC-mU6">
-                                                            <rect key="frame" x="35" y="9.5" width="92" height="14"/>
+                                                            <rect key="frame" x="35" y="10" width="92" height="14"/>
                                                             <fontDescription key="fontDescription" name="Corbel" family="Corbel" pointSize="14"/>
                                                             <color key="textColor" red="0.023529411764705882" green="0.74509803921568629" blue="0.74117647058823533" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
@@ -173,7 +173,7 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2n5-eT-6he">
-                                                            <rect key="frame" x="16" y="8.5" width="133" height="14"/>
+                                                            <rect key="frame" x="16" y="9" width="133" height="14"/>
                                                             <fontDescription key="fontDescription" name="Corbel-Bold" family="Corbel" pointSize="14"/>
                                                             <color key="textColor" red="0.63137254901960782" green="0.73333333333333328" blue="0.73725490196078436" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
@@ -268,7 +268,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="L0u-nH-M30">
-                                                <rect key="frame" x="85.5" y="10" width="28" height="30"/>
+                                                <rect key="frame" x="85.5" y="10.5" width="28" height="30"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="COE-0i-R7B"/>
@@ -283,7 +283,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bf1-da-YCL">
-                                                <rect key="frame" x="157.5" y="10" width="28" height="30"/>
+                                                <rect key="frame" x="157.5" y="10.5" width="28" height="30"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="28" id="dK5-H0-G4K"/>
@@ -298,7 +298,7 @@
                                                 </connections>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gwa-gr-lkl">
-                                                <rect key="frame" x="113.5" y="10.5" width="44" height="33"/>
+                                                <rect key="frame" x="113.5" y="11" width="44" height="33"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="44" id="axW-7f-2Kh"/>
                                                     <constraint firstAttribute="height" constant="33" id="nRn-gS-KTx"/>
@@ -313,7 +313,7 @@
                                                 </userDefinedRuntimeAttributes>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4QC-FN-c9Q">
-                                                <rect key="frame" x="85.5" y="51" width="28" height="30"/>
+                                                <rect key="frame" x="85.5" y="51.5" width="28" height="30"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="aMf-7s-EP9"/>
@@ -328,7 +328,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SEX-O4-qKc">
-                                                <rect key="frame" x="157.5" y="51" width="28" height="30"/>
+                                                <rect key="frame" x="157.5" y="51.5" width="28" height="30"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="SkP-i4-SpK"/>
@@ -343,7 +343,7 @@
                                                 </connections>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SXa-2k-abA">
-                                                <rect key="frame" x="113.5" y="51.5" width="44" height="33"/>
+                                                <rect key="frame" x="113.5" y="52" width="44" height="33"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="44" id="6vH-Ms-4lw"/>
                                                     <constraint firstAttribute="height" constant="33" id="xOj-Ua-muK"/>
@@ -400,6 +400,9 @@
                                             <constraint firstAttribute="bottom" secondItem="szJ-pV-drV" secondAttribute="bottom" id="npl-3d-vTa"/>
                                         </constraints>
                                     </view>
+                                    <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="rXh-Xg-hJt">
+                                        <rect key="frame" x="75" y="225.5" width="37" height="37"/>
+                                    </activityIndicatorView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -408,11 +411,13 @@
                                     <constraint firstAttribute="trailing" secondItem="w9G-CW-bIH" secondAttribute="trailing" id="DMg-6y-6fE"/>
                                     <constraint firstItem="ZHd-lv-n1t" firstAttribute="top" secondItem="QMo-33-XoO" secondAttribute="top" id="HIA-iY-iWf"/>
                                     <constraint firstAttribute="trailing" secondItem="ZHd-lv-n1t" secondAttribute="trailing" id="Jez-eL-qTQ"/>
+                                    <constraint firstItem="rXh-Xg-hJt" firstAttribute="centerY" secondItem="jR2-1Y-K1q" secondAttribute="centerY" id="Jzb-cg-NaQ"/>
                                     <constraint firstItem="jR2-1Y-K1q" firstAttribute="top" secondItem="w9G-CW-bIH" secondAttribute="bottom" id="Kl8-Mb-o3R"/>
                                     <constraint firstItem="lRj-FQ-01N" firstAttribute="leading" secondItem="QMo-33-XoO" secondAttribute="leading" id="MST-EC-TOf"/>
                                     <constraint firstAttribute="trailing" secondItem="OCH-6W-LC8" secondAttribute="trailing" id="OuU-aH-oTl"/>
                                     <constraint firstItem="lRj-FQ-01N" firstAttribute="top" secondItem="jR2-1Y-K1q" secondAttribute="bottom" id="RjS-h8-cRf"/>
                                     <constraint firstItem="jR2-1Y-K1q" firstAttribute="leading" secondItem="QMo-33-XoO" secondAttribute="leading" id="V9f-fz-PUc"/>
+                                    <constraint firstItem="rXh-Xg-hJt" firstAttribute="centerX" secondItem="jR2-1Y-K1q" secondAttribute="centerX" id="WtK-ji-Zv3"/>
                                     <constraint firstAttribute="trailing" secondItem="lRj-FQ-01N" secondAttribute="trailing" id="Y0X-QR-e9R"/>
                                     <constraint firstAttribute="bottom" secondItem="OCH-6W-LC8" secondAttribute="bottom" id="cGp-Lc-ABO"/>
                                     <constraint firstItem="w9G-CW-bIH" firstAttribute="leading" secondItem="QMo-33-XoO" secondAttribute="leading" id="cXq-YJ-gkt"/>
@@ -559,6 +564,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="activityIndicator" destination="rXh-Xg-hJt" id="fC9-XY-Flm"/>
                         <outlet property="addIntervalButton" destination="bf1-da-YCL" id="YQD-ss-Uje"/>
                         <outlet property="addLikePhotosButton" destination="SEX-O4-qKc" id="jC9-fW-uHV"/>
                         <outlet property="instegramViewerNameLabel" destination="etf-6V-lZV" id="LdZ-TV-a1U"/>

@@ -42,12 +42,14 @@
 @property (weak, nonatomic) IBOutlet UIButton *subLikePhotosButton;
 @property (weak, nonatomic) IBOutlet UIButton *addLikePhotosButton;
 @property (weak, nonatomic) IBOutlet UIButton *startButton;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
 
 @property (nonatomic, strong) NSString *authToken;
 
 @property (nonatomic, strong) NSArray *userList;
 
 @property (nonatomic, strong) NSArray *mediaList;
+@property (nonatomic, strong) NSMutableDictionary *mediaDictionary;
 
 @property (nonatomic) NSUInteger timeInterval;
 @property (nonatomic) NSUInteger likePhotoNumber;
@@ -86,7 +88,9 @@
 
     self.viewerTableView.estimatedRowHeight = 188;
     self.viewerTableView.rowHeight = UITableViewAutomaticDimension;
-
+    
+    self.mediaDictionary = [[NSMutableDictionary alloc] init];
+    
     self.package = RLPackageType1;
     self.processingPosition = -1;
 }
@@ -253,43 +257,106 @@
         }
         else {
             
+            if (self.processingPosition != -1) {
+                RLUserListTableViewCell *oldCell = [self.usersTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.processingPosition + 1 inSection:0]];
+                if (oldCell) {
+                    [oldCell layoutSubviews];
+                }
+            }
+
+            // Update for new cell
+            RLUserListTableViewCell *newCell = [self.usersTableView cellForRowAtIndexPath:indexPath];
+            [newCell layoutSubviews];
+
+            self.processingPosition = indexPath.row - 1;
+            
             // Get the account of user
             RLUser *user = self.userList[indexPath.row - 1];
             
-            // Show Instagram page of user.
-            NSString *userId = [self getUserIdWithName: user.userName];
-            
-            if (userId) {
-                
-                self.instegramViewerNameLabel.text = user.userName;
+            // If user is not exist
+            if (user.invalid == YES) {
 
-                // Get the media user list
-                NSArray *mediaArray = [self getMediaOfUserWithId:userId];
-                self.mediaList = mediaArray;
-                
-                // Reload viewer table with data
+                // Show incorrect user
+                self.instegramViewerNameLabel.text = @"Incorrect user";
+                self.mediaList = nil;
                 [self.viewerTableView reloadData];
+                return;
+            }
+            
+            // Case we load user data already.
+            if (user.userId && user.userId.length > 0) {
+                
+                // Get the media list of user.
+                if ([self.mediaDictionary valueForKey:user.userId]) {
+                    
+                    NSArray *mediaArray = [self.mediaDictionary objectForKey:user.userId];
+                    self.mediaList = mediaArray;
+                    
+                    // Reload viewer table with data
+                    [self.viewerTableView reloadData];
+                }
+                else {
+                    
+                    // Load the user data.
+                    self.instegramViewerNameLabel.text = user.userName;
+                    
+                    // Get the media user list
+                    NSArray *mediaArray = [self getMediaOfUserWithId:user.userId];
+                    
+                    // Save the media of all user (use for case use click in the list to show status again)
+                    [self.mediaDictionary setValue:mediaArray forKey:user.userId];
+
+                    self.mediaList = mediaArray;
+                    
+                    // Reload viewer table with data
+                    [self.viewerTableView reloadData];
+                }
             }
             else {
                 
-                self.instegramViewerNameLabel.text = @"Un-correct user";
+                // Load user id and user media.
                 
-                user.invalid = YES;
+                // Show Instagram page of user.
+                NSString *userId = [self getUserIdWithName: user.userName];
                 
-                self.mediaList = nil;
-                
-                [self.viewerTableView reloadData];
-                [self.usersTableView reloadData];
+                if (userId) {
+                    
+                    user.userId = userId;
+                    self.instegramViewerNameLabel.text = user.userName;
+                    
+                    // Get the media user list
+                    NSArray *mediaArray = [self getMediaOfUserWithId:userId];
+                    
+                    // Save the media of all user (use for case use click in the list to show status again)
+                    [self.mediaDictionary setValue:mediaArray forKey:user.userId];
+
+                    self.mediaList = mediaArray;
+                    
+                    // Reload viewer table with data
+                    [self.viewerTableView reloadData];
+                }
+                else {
+                    
+                    self.instegramViewerNameLabel.text = @"Incorrect user";
+                    user.invalid = YES;
+                    self.mediaList = nil;
+                    [self.viewerTableView reloadData];
+                    [self.usersTableView reloadData];
+                }
+
             }
         }
     }
     else {
+        
+        // Viewer table view
         // Show the detail of instagram item.
     }
 }
 
 - (void)likeUserAtPosition:(NSUInteger)position
 {
+    
     RLUser *user = self.userList[position];
     
     // Show Instagram page of user.
@@ -298,8 +365,14 @@
 
     if (userId) {
 
+        // Save the user id in user.
+        user.userId = userId;
+        
         // Get the media user list
         NSArray *mediaArray = [self getMediaOfUserWithId:userId];
+        
+        // Save the media of all user (use for case use click in the list to show status again)
+
         self.mediaList = mediaArray;
 
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -311,12 +384,20 @@
             [self.usersTableView reloadData];
         });
 
-        for (int i = 0; i < MAX(self.likePhotoNumber, self.mediaList.count); i++) {
+        for (int i = 0; i < MIN(self.likePhotoNumber, self.mediaList.count); i++) {
+            
             RLInstagramMedia *media = [self.mediaList objectAtIndex: i];
-            [self likeMediaId:media.mediaId];
+            
+            BOOL result = [self likeMediaId:media.mediaId];
             
             // Update status of the viewer
-            media.likeStatus = true;
+            if (result == YES) {
+                media.likeStatus = RLLikeStatusDone;
+            }
+            else {
+                media.likeStatus = RLLikeStatusFail;
+            }
+            
             if (i == MAX(self.likePhotoNumber, self.mediaList.count) - 1) {
                 user.like = YES;
             }
@@ -328,6 +409,8 @@
             [NSThread sleepForTimeInterval:self.timeInterval];
         }
         
+        [self.mediaDictionary setValue:self.mediaList forKey:user.userId];
+
     }
     else {
         
@@ -341,6 +424,8 @@
             [self.usersTableView reloadData];
         });
     }
+    
+
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -479,9 +564,18 @@
     // TODO: start check like for all account.
     // When finish -> show the finish message.
     
+    // Clean all data when press like button.
+    
+    [self.mediaDictionary removeAllObjects];
+
+    
     UIButton *button = (UIButton *)sender;
     if ([button.titleLabel.text isEqualToString:@"START"]) {
-        [button setTitle:@"PAUSE" forState:UIControlStateNormal];
+        [button setTitle:@"STOP" forState:UIControlStateNormal];
+        
+        // Don't allow user do in the table until it done.
+        self.usersTableView.userInteractionEnabled = NO;
+        [self.activityIndicator startAnimating];
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
@@ -494,13 +588,19 @@
         });
     }
     else {
+        
+        self.usersTableView.userInteractionEnabled = YES;
+        [self.activityIndicator stopAnimating];
+
         [button setTitle:@"START" forState:UIControlStateNormal];
     }
 }
 
 - (void)showDoneMessage;
 {
-    
+    self.usersTableView.userInteractionEnabled = YES;
+    [self.activityIndicator stopAnimating];
+
     dispatch_async(dispatch_get_main_queue(), ^{
         // Reload viewer table with data
         // Show Done message
@@ -529,8 +629,6 @@
 {
     [self dismissViewControllerAnimated:YES completion:nil];
     self.authToken = token;
-    
-    
 }
 
 #pragma mark: Instagram part.
@@ -586,18 +684,24 @@
         if ([array isKindOfClass:[NSArray class]] && array.count > 0) {
             
             NSMutableArray *mediaArray = [[NSMutableArray alloc] init];
-            for (NSDictionary *dataDict in array) {
+            
+            for (int i = 0; i < MIN(array.count, self.likePhotoNumber); i++) {
+
+                NSDictionary *dataDict = array[i];
                 RLInstagramMedia *media = [[RLInstagramMedia alloc] initWithJson: dataDict];
                 [mediaArray addObject:media];
             }
-            return [NSArray arrayWithArray:mediaArray];
+            
+            NSArray *result  = [NSArray arrayWithArray:mediaArray];
+            
+            return result;
         }
     }
     
     return nil;
 }
 
-- (void)likeMediaId:(NSString *)mediaId{
+- (BOOL)likeMediaId:(NSString *)mediaId{
     
     NSString *strURL = [NSString stringWithFormat:@"https://api.instagram.com/v1/media/%@/likes", mediaId];
     
@@ -618,8 +722,10 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
     
     NSLog(@"Response: %@", dict);
-    
-    
+    if ([dict objectForKey:@"data"] && [dict objectForKey:@"data"] == [NSNull null]) {
+        return YES;
+    }
+    return NO;
     
 }
 @end

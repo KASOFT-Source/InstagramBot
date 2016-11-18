@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "RLEnumeration.h"
 
 @interface RLInstagramMedia : NSObject
 
@@ -15,7 +16,7 @@
 @property (nonatomic, strong) NSString *imageURL;
 @property (nonatomic, strong) NSString *caption;
 @property (nonatomic) NSUInteger likeCount;
-@property (nonatomic) BOOL likeStatus;
+@property (nonatomic) RLLikeStatus likeStatus;
 
 - (id)initWithJson:(NSDictionary *)dict;
 

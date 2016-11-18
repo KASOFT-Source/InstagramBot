@@ -36,7 +36,29 @@
     
     _media = media;
     
-    self.likeIcon.hidden = !media.likeStatus;
+    switch (media.likeStatus) {
+        case RLLikeStatusNone:
+        {
+            self.likeIcon.hidden = YES;
+
+        }
+            break;
+        case RLLikeStatusDone:
+        {
+            self.likeIcon.hidden = NO;
+            self.likeIcon.image = [UIImage imageNamed:@"icon_like"];
+            
+        }
+            break;
+        case RLLikeStatusFail:
+        {
+            self.likeIcon.hidden = NO;
+            self.likeIcon.image = [UIImage imageNamed:@"icon_like_fail"];
+        }
+            break;
+        default:
+            break;
+    }
     [self.instagramImageView hnk_setImageFromURL:[NSURL URLWithString:media.imageURL]];
 
 }
