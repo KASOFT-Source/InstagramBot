@@ -19,6 +19,8 @@
 #define kTIMEINTERVAL 2
 #define kLIKEPHOTOS 2
 #define kMAXLIKEPHOTOS 5
+#define FOLDER_SETTING @"Setting"
+#define settingFileName @"RLSetting.plist"
 
 @interface RLHomeViewController () <RLLoginProtocol, RLCreateListUserProtocol,UITableViewDelegate, UITableViewDataSource>
 
@@ -54,6 +56,8 @@
 @property (nonatomic) NSUInteger timeInterval;
 @property (nonatomic) NSUInteger likePhotoNumber;
 @property (nonatomic) NSInteger processingPosition;
+
+@property (nonatomic) BOOL stopProcessing;
 
 @property (nonatomic) RLPackageType package;
 
@@ -226,7 +230,7 @@
             }
             else if (user.invalid == YES) {
                 cell.selectedIcon.hidden = NO;
-                cell.selectedIcon.image = [UIImage imageNamed:@"icon_menu_back"];
+                cell.selectedIcon.image = [UIImage imageNamed:@"icon_fail"];
                 cell.nameLabel.textColor = [UIColor redColor];
             }
             else {
@@ -257,19 +261,17 @@
         }
         else {
             
+            NSMutableArray *reloadArray = [[NSMutableArray alloc] initWithObjects:indexPath, nil];
+
             if (self.processingPosition != -1) {
-                RLUserListTableViewCell *oldCell = [self.usersTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:self.processingPosition + 1 inSection:0]];
-                if (oldCell) {
-                    [oldCell layoutSubviews];
-                }
+                NSIndexPath* indexPath = [NSIndexPath indexPathForRow:self.processingPosition + 1 inSection:0];
+                [reloadArray addObject:indexPath];
             }
 
-            // Update for new cell
-            RLUserListTableViewCell *newCell = [self.usersTableView cellForRowAtIndexPath:indexPath];
-            [newCell layoutSubviews];
-
             self.processingPosition = indexPath.row - 1;
-            
+
+            [self.usersTableView reloadRowsAtIndexPaths:reloadArray withRowAnimation:UITableViewRowAnimationNone];
+
             // Get the account of user
             RLUser *user = self.userList[indexPath.row - 1];
             
@@ -500,6 +502,10 @@
 }
 
 - (IBAction)saveUsersButtonClick:(id)sender {
+    
+    if (self.userList.count > 0) {
+//        self.userList
+    }
 }
 
 - (IBAction)loadUsersButtonClick:(id)sender {
@@ -566,11 +572,13 @@
     
     // Clean all data when press like button.
     
-    [self.mediaDictionary removeAllObjects];
-
     
     UIButton *button = (UIButton *)sender;
     if ([button.titleLabel.text isEqualToString:@"START"]) {
+        
+        self.stopProcessing = NO;
+        [self.mediaDictionary removeAllObjects];
+
         [button setTitle:@"STOP" forState:UIControlStateNormal];
         
         // Don't allow user do in the table until it done.
@@ -581,10 +589,13 @@
             
             for (int i = 0; i < self.userList.count; i++) {
                 [self likeUserAtPosition:i];
+                
+                if (self.stopProcessing == YES) {
+                    return;
+                }
             }
 
             [self showDoneMessage];
-            
         });
     }
     else {
@@ -592,19 +603,22 @@
         self.usersTableView.userInteractionEnabled = YES;
         [self.activityIndicator stopAnimating];
 
+        self.stopProcessing = YES;
+
         [button setTitle:@"START" forState:UIControlStateNormal];
     }
 }
 
 - (void)showDoneMessage;
 {
-    self.usersTableView.userInteractionEnabled = YES;
-    [self.activityIndicator stopAnimating];
 
     dispatch_async(dispatch_get_main_queue(), ^{
         // Reload viewer table with data
         // Show Done message
         
+        self.usersTableView.userInteractionEnabled = YES;
+        [self.activityIndicator stopAnimating];
+
         UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Message"
                                                                        message:@"Done"
                                                                 preferredStyle:UIAlertControllerStyleAlert];
@@ -728,4 +742,55 @@
     return NO;
     
 }
+
+
+- (void)loadSavedCommonData {
+    NSString *filePath = [self settingArchivePath];
+    NSDictionary *settingDict = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
+    if (settingDict) {
+        self.userList = [settingDict objectForKey:@"userList"];
+    }
+}
+
+#pragma mark: save setting part.
+- (void)saveCommonData;
+{
+    NSMutableDictionary *settingDict = [NSMutableDictionary new];
+    NSString *filePath = [self settingArchivePath];
+    
+    if (self.userList && self.userList.count > 0) {
+        settingDict[@"userList"] = self.userList;
+    }
+    
+    BOOL saveSuccess =[NSKeyedArchiver archiveRootObject:settingDict
+                                                  toFile:filePath];
+    if (saveSuccess) {
+        NSLog(@"saveSetting");
+    }
+    else {
+        NSLog(@"saveSetting FAIL");
+    }
+}
+
+
+- (NSString *)settingArchivePath
+{
+    // Make sure that the first argument is NSDocumentDirectory and not NSDocumantationDirectory.
+    NSArray *documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    
+    // Get the one document directory from that list.
+    NSString *documentDirectory = [documentDirectories firstObject];
+    documentDirectory= [documentDirectory  stringByAppendingPathComponent:FOLDER_SETTING];
+    
+    //Create folder
+    if (![[NSFileManager defaultManager] fileExistsAtPath:documentDirectory]){
+        [[NSFileManager defaultManager] createDirectoryAtPath:documentDirectory
+                                  withIntermediateDirectories:NO
+                                                   attributes:nil
+                                                        error:nil];
+    }
+    
+    return [documentDirectory  stringByAppendingPathComponent:settingFileName];
+}
+
 @end
