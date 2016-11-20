@@ -22,6 +22,8 @@
 		5490EABA1DD229EE007D1BFC /* RLHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5490EAB71DD229EE007D1BFC /* RLHomeViewController.m */; };
 		5490EABB1DD229EE007D1BFC /* RLLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5490EAB91DD229EE007D1BFC /* RLLoginViewController.m */; };
 		5490EABE1DD229FE007D1BFC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5490EABD1DD229FE007D1BFC /* AppDelegate.m */; };
+		54A12A461DE0B8A2002ADDD5 /* RLSaveItemsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 54A12A451DE0B8A2002ADDD5 /* RLSaveItemsViewController.m */; };
+		54A12A491DE0B8FC002ADDD5 /* RLSaveIteTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 54A12A481DE0B8FC002ADDD5 /* RLSaveIteTableViewCell.m */; };
 		54B1B2C11DD6B2F80093FA2B /* RLInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 54B1B2C01DD6B2F80093FA2B /* RLInfoViewController.m */; };
 		54B1B2C61DD6D2D10093FA2B /* RLInAppItemsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 54B1B2C51DD6D2D10093FA2B /* RLInAppItemsViewController.m */; };
 		54B1B2C91DD6D7AE0093FA2B /* RLInAppItemTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 54B1B2C81DD6D7AE0093FA2B /* RLInAppItemTableViewCell.m */; };
@@ -75,6 +77,10 @@
 		5490EAB91DD229EE007D1BFC /* RLLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RLLoginViewController.m; sourceTree = "<group>"; };
 		5490EABC1DD229FE007D1BFC /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5490EABD1DD229FE007D1BFC /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		54A12A441DE0B8A2002ADDD5 /* RLSaveItemsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RLSaveItemsViewController.h; sourceTree = "<group>"; };
+		54A12A451DE0B8A2002ADDD5 /* RLSaveItemsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RLSaveItemsViewController.m; sourceTree = "<group>"; };
+		54A12A471DE0B8FC002ADDD5 /* RLSaveIteTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RLSaveIteTableViewCell.h; path = View/RLSaveIteTableViewCell.h; sourceTree = "<group>"; };
+		54A12A481DE0B8FC002ADDD5 /* RLSaveIteTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RLSaveIteTableViewCell.m; path = View/RLSaveIteTableViewCell.m; sourceTree = "<group>"; };
 		54B1B2BF1DD6B2F80093FA2B /* RLInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RLInfoViewController.h; sourceTree = "<group>"; };
 		54B1B2C01DD6B2F80093FA2B /* RLInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RLInfoViewController.m; sourceTree = "<group>"; };
 		54B1B2C31DD6C9D50093FA2B /* RLEnumeration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RLEnumeration.h; path = Configure/RLEnumeration.h; sourceTree = "<group>"; };
@@ -162,6 +168,8 @@
 				54B1B2C51DD6D2D10093FA2B /* RLInAppItemsViewController.m */,
 				54B1B2BF1DD6B2F80093FA2B /* RLInfoViewController.h */,
 				54B1B2C01DD6B2F80093FA2B /* RLInfoViewController.m */,
+				54A12A441DE0B8A2002ADDD5 /* RLSaveItemsViewController.h */,
+				54A12A451DE0B8A2002ADDD5 /* RLSaveItemsViewController.m */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -192,6 +200,8 @@
 				543CEAC61DD6295400F8A8D2 /* RLViewerTableViewCell.m */,
 				54B1B2C71DD6D7AE0093FA2B /* RLInAppItemTableViewCell.h */,
 				54B1B2C81DD6D7AE0093FA2B /* RLInAppItemTableViewCell.m */,
+				54A12A471DE0B8FC002ADDD5 /* RLSaveIteTableViewCell.h */,
+				54A12A481DE0B8FC002ADDD5 /* RLSaveIteTableViewCell.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -389,6 +399,7 @@
 				54B7B24B1DDC31D60073A669 /* RLInstagramMedia.m in Sources */,
 				540062D91DDC6588000ADC21 /* UIButton+Haneke.m in Sources */,
 				543CEAC81DD6295400F8A8D2 /* RLViewerTableViewCell.m in Sources */,
+				54A12A491DE0B8FC002ADDD5 /* RLSaveIteTableViewCell.m in Sources */,
 				540062D61DDC6588000ADC21 /* HNKDiskFetcher.m in Sources */,
 				540062D41DDC6588000ADC21 /* HNKCache.m in Sources */,
 				5490EABA1DD229EE007D1BFC /* RLHomeViewController.m in Sources */,
@@ -400,6 +411,7 @@
 				54C9113E1DDB1D0F003625F2 /* RLUser.m in Sources */,
 				540062DB1DDC6588000ADC21 /* UIView+Haneke.m in Sources */,
 				5490EABB1DD229EE007D1BFC /* RLLoginViewController.m in Sources */,
+				54A12A461DE0B8A2002ADDD5 /* RLSaveItemsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

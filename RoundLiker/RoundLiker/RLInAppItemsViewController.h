@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 
 
-@interface RLInAppItemsViewController : UIViewController<UIWebViewDelegate>
+@interface RLInAppItemsViewController : UIViewController
 
 @end

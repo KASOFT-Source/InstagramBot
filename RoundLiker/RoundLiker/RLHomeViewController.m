@@ -13,16 +13,15 @@
 #import "RLCreateListUserViewController.h"
 #import "RLUser.h"
 #import "RLInstagramMedia.h"
+#import "RLSaveItemsViewController.h"
 
 #define RGB(r, g, b, a) \
 [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:a]
 #define kTIMEINTERVAL 2
 #define kLIKEPHOTOS 2
 #define kMAXLIKEPHOTOS 5
-#define FOLDER_SETTING @"Setting"
-#define settingFileName @"RLSetting.plist"
 
-@interface RLHomeViewController () <RLLoginProtocol, RLCreateListUserProtocol,UITableViewDelegate, UITableViewDataSource>
+@interface RLHomeViewController () <RLLoginProtocol, RLCreateListUserProtocol,UITableViewDelegate, UITableViewDataSource, RLSaveItemsDelegate>
 
 #pragma mark Properties
 
@@ -108,7 +107,8 @@
     }];
     
     [self loadPurchasePackage];
-
+    
+    [self checkButtonStatus];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -166,6 +166,8 @@
         default:
             break;
     }
+    
+    // TODO: Load data from Apple server
 }
 
 - (void)updateUI;
@@ -183,10 +185,8 @@
         loginViewController.delegate = self;
         
         [self presentViewController:loginViewController animated:YES completion:^{}];
-        
     }
 }
-
 
 
 #pragma mark UITableViewDataSource
@@ -291,6 +291,8 @@
                 // Get the media list of user.
                 if ([self.mediaDictionary valueForKey:user.userId]) {
                     
+                    self.instegramViewerNameLabel.text = user.userName;
+
                     NSArray *mediaArray = [self.mediaDictionary objectForKey:user.userId];
                     self.mediaList = mediaArray;
                     
@@ -436,14 +438,21 @@
         RLCreateListUserViewController *controller = (RLCreateListUserViewController *)segue.destinationViewController;
         controller.delegate = self;
     }
+    else if ([segue.identifier isEqualToString:@"SaveListSegue"]) {
+        
+        RLSaveItemsViewController *controller = (RLSaveItemsViewController *)segue.destinationViewController;
+        if ((UIButton *)sender == self.saveUsersButton) {
+            controller.save = YES;
+            controller.userList = self.userList;
+        }
+        else {
+            controller.save = NO;
+            controller.delegate = self;
+
+        }
+    }
 }
 
-#pragma mark RLCreateListUserProtocol
-- (void)createUserListWithData:(NSArray *)users;
-{
-    self.userList = users;
-    [self.usersTableView reloadData];
-}
 
 #pragma mark IBAction implement
 - (IBAction)inforButtonClick:(id)sender {
@@ -502,14 +511,51 @@
 }
 
 - (IBAction)saveUsersButtonClick:(id)sender {
-    
-    if (self.userList.count > 0) {
-//        self.userList
-    }
+    [self performSegueWithIdentifier:@"SaveListSegue" sender:sender];
 }
 
 - (IBAction)loadUsersButtonClick:(id)sender {
+    [self performSegueWithIdentifier:@"SaveListSegue" sender:sender];
 }
+
+#pragma mark RLCreateListUserProtocol
+- (void)createUserListWithData:(NSArray *)users;
+{
+    [self loadUserWithData:users];
+}
+
+#pragma mark RLSaveItemsDelegate
+- (void)loadUserWithData:(NSArray *)users;
+{
+    self.userList = users;
+    [self.usersTableView reloadData];
+    
+    [self checkButtonStatus];
+}
+
+- (void)checkButtonStatus
+{
+    
+    if (self.userList && self.userList.count > 0) {
+        
+        self.startButton.enabled = YES;
+        self.saveUsersButton.enabled = YES;
+        
+        self.startButton.alpha = 1;
+        self.saveUsersButton.alpha = 1;
+
+    }
+    else {
+        self.startButton.enabled = NO;
+        self.saveUsersButton.enabled = NO;
+        
+        self.startButton.alpha = 0.6;
+        self.saveUsersButton.alpha = 0.6;
+        
+    }
+}
+
+#pragma mark IBAction
 
 - (IBAction)subIntervalButtonClick:(id)sender {
 
@@ -741,56 +787,6 @@
     }
     return NO;
     
-}
-
-
-- (void)loadSavedCommonData {
-    NSString *filePath = [self settingArchivePath];
-    NSDictionary *settingDict = [NSKeyedUnarchiver unarchiveObjectWithFile:filePath];
-    if (settingDict) {
-        self.userList = [settingDict objectForKey:@"userList"];
-    }
-}
-
-#pragma mark: save setting part.
-- (void)saveCommonData;
-{
-    NSMutableDictionary *settingDict = [NSMutableDictionary new];
-    NSString *filePath = [self settingArchivePath];
-    
-    if (self.userList && self.userList.count > 0) {
-        settingDict[@"userList"] = self.userList;
-    }
-    
-    BOOL saveSuccess =[NSKeyedArchiver archiveRootObject:settingDict
-                                                  toFile:filePath];
-    if (saveSuccess) {
-        NSLog(@"saveSetting");
-    }
-    else {
-        NSLog(@"saveSetting FAIL");
-    }
-}
-
-
-- (NSString *)settingArchivePath
-{
-    // Make sure that the first argument is NSDocumentDirectory and not NSDocumantationDirectory.
-    NSArray *documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    
-    // Get the one document directory from that list.
-    NSString *documentDirectory = [documentDirectories firstObject];
-    documentDirectory= [documentDirectory  stringByAppendingPathComponent:FOLDER_SETTING];
-    
-    //Create folder
-    if (![[NSFileManager defaultManager] fileExistsAtPath:documentDirectory]){
-        [[NSFileManager defaultManager] createDirectoryAtPath:documentDirectory
-                                  withIntermediateDirectories:NO
-                                                   attributes:nil
-                                                        error:nil];
-    }
-    
-    return [documentDirectory  stringByAppendingPathComponent:settingFileName];
 }
 
 @end
