@@ -216,7 +216,7 @@
             
             cell.nameLabel.text = user.userName;
             if (indexPath.row == self.processingPosition + 1) {
-                cell.contentView.backgroundColor = [UIColor yellowColor];
+                cell.contentView.backgroundColor = RGB(71, 87, 103, 1);
             }
             else {
                 cell.contentView.backgroundColor = RGB(42, 56, 69, 1);
