@@ -13,3 +13,9 @@ typedef NS_ENUM(NSInteger, RLLikeStatus) {
     RLLikeStatusDone,
     RLLikeStatusFail
 };
+
+typedef NS_ENUM(NSInteger, RLRequestStatus) {
+    RLRequestStatusSuccess = 0,
+    RLRequestStatusFail,
+    RLRequestStatusFailByLimited
+};

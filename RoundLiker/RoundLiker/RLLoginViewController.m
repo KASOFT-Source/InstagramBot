@@ -18,6 +18,7 @@
 @property(strong,nonatomic)NSString *typeOfAuthentication;
 //@property (nonatomic, strong) NSString *authToken;
 
+
 @end
 
 @implementation RLLoginViewController

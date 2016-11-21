@@ -217,7 +217,7 @@
         settingDict[@"slot4"] = self.slot4;
     }
     if (self.slot5 && self.slot5.count > 0) {
-        settingDict[@"slot5"] = self.slot1;
+        settingDict[@"slot5"] = self.slot5;
     }
 
     BOOL saveSuccess =[NSKeyedArchiver archiveRootObject:settingDict

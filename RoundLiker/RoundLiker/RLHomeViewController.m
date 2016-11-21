@@ -392,14 +392,24 @@
             
             RLInstagramMedia *media = [self.mediaList objectAtIndex: i];
             
-            BOOL result = [self likeMediaId:media.mediaId];
+            RLRequestStatus result = [self likeMediaId:media.mediaId];
             
             // Update status of the viewer
-            if (result == YES) {
+            if (result == RLRequestStatusSuccess) {
                 media.likeStatus = RLLikeStatusDone;
             }
             else {
                 media.likeStatus = RLLikeStatusFail;
+                
+                if (result == RLRequestStatusFailByLimited) {
+                    
+                    self.stopProcessing = YES;
+
+                    // Stop all things and show message alert user back in next hour.
+                    
+                    [self showLimitedRequestMessage];
+                    break;
+                }
             }
             
             if (i == MAX(self.likePhotoNumber, self.mediaList.count) - 1) {
@@ -684,6 +694,36 @@
     });
 }
 
+- (void)showLimitedRequestMessage;
+{
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Reload viewer table with data
+        // Show Done message
+        
+        self.usersTableView.userInteractionEnabled = YES;
+        [self.activityIndicator stopAnimating];
+        
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Warning"
+                                                                       message:@"You met the limit likes in hour. Please get back after one hour"
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"OK"
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction * action) {
+                                                           
+                                                           [alert dismissViewControllerAnimated:YES completion:nil];
+                                                           [self.startButton setTitle:@"START" forState:UIControlStateNormal];
+                                                           
+                                                       }];
+        
+        [alert addAction:cancel];
+        
+        [self presentViewController:alert animated:YES completion:nil];
+    });
+}
+
+
 #pragma mark RLLoginProtocol
 - (void)loginFishedWithToken:(NSString *)token;
 {
@@ -745,7 +785,7 @@
             
             NSMutableArray *mediaArray = [[NSMutableArray alloc] init];
             
-            for (int i = 0; i < MIN(array.count, self.likePhotoNumber); i++) {
+            for (int i = 0; i < array.count; i++) {
 
                 NSDictionary *dataDict = array[i];
                 RLInstagramMedia *media = [[RLInstagramMedia alloc] initWithJson: dataDict];
@@ -761,7 +801,7 @@
     return nil;
 }
 
-- (BOOL)likeMediaId:(NSString *)mediaId{
+- (RLRequestStatus)likeMediaId:(NSString *)mediaId{
     
     NSString *strURL = [NSString stringWithFormat:@"https://api.instagram.com/v1/media/%@/likes", mediaId];
     
@@ -783,9 +823,22 @@
     
     NSLog(@"Response: %@", dict);
     if ([dict objectForKey:@"data"] && [dict objectForKey:@"data"] == [NSNull null]) {
-        return YES;
+        return RLRequestStatusSuccess;
     }
-    return NO;
+    else {
+        if ([dict objectForKey:@"meta"]) {
+            NSDictionary *metaDict = [dict objectForKey:@"meta"];
+            
+            if ([metaDict objectForKey:@"code"]) {
+                NSUInteger code = [[metaDict objectForKey:@"code"] integerValue];
+                if (code == 429) {
+                    // Request limited value.
+                    return RLRequestStatusFailByLimited;
+                }
+            }
+        }
+    }
+    return RLRequestStatusFail;
     
 }
 
