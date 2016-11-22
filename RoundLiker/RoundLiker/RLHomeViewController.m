@@ -14,6 +14,7 @@
 #import "RLUser.h"
 #import "RLInstagramMedia.h"
 #import "RLSaveItemsViewController.h"
+#import "RMStore.h"
 
 #define RGB(r, g, b, a) \
 [UIColor colorWithRed:(r)/255.0 green:(g)/255.0 blue:(b)/255.0 alpha:a]
@@ -51,6 +52,7 @@
 
 @property (nonatomic, strong) NSArray *mediaList;
 @property (nonatomic, strong) NSMutableDictionary *mediaDictionary;
+@property (nonatomic) NSUInteger currentUserId;
 
 @property (nonatomic) NSUInteger timeInterval;
 @property (nonatomic) NSUInteger likePhotoNumber;
@@ -96,6 +98,8 @@
     
     self.package = RLPackageType1;
     self.processingPosition = -1;
+    
+    [self restoreTransaction];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -116,6 +120,18 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark: IAP Part
+- (void)restoreTransaction;
+{
+    // Restore the transaction for checking buoght items.
+    [[RMStore defaultStore] restoreTransactionsOnSuccess:^(NSArray *transactions){
+        NSLog(@"Transactions restored");
+    } failure:^(NSError *error) {
+        NSLog(@"Something went wrong");
+    }];
+}
+
+#pragma mark: Load default setting.
 - (void)loadDefaultSettingValue;
 {
     self.timeInterval = kTIMEINTERVAL;
@@ -839,6 +855,49 @@
         }
     }
     return RLRequestStatusFail;
+    
+}
+
+
+- (BOOL)getLikeStatusOfMediaId:(NSString *)mediaId{
+    
+    NSString *strURL = [NSString stringWithFormat:@"https://api.instagram.com/v1/media/%@/likes", mediaId];
+    
+    NSMutableURLRequest *requestData = [NSMutableURLRequest requestWithURL:
+                                        [NSURL URLWithString:strURL]];
+    [requestData setHTTPMethod:@"GET"];
+    NSString *post = [NSString stringWithFormat:@"access_token=%@", self.authToken];
+    NSData *postData = [post dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+    [requestData setHTTPBody:postData];
+    
+    NSURLResponse *response = NULL;
+    NSError *requestError = NULL;
+    
+    // Just like and don't care about the resul.
+    [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
+    
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
+    
+    NSLog(@"Response: %@", dict);
+    if ([dict objectForKey:@"data"] && [dict objectForKey:@"data"] == [NSNull null]) {
+
+        NSArray *array = (NSArray *)[dict objectForKey:@"data"];
+
+        if ([array isKindOfClass:[NSArray class]] && array.count > 0) {
+            for (int i = 0; i < array.count; i++) {
+                
+                NSDictionary *dataDict = array[i];
+                if ([dataDict objectForKey:@"id"]) {
+                    NSUInteger likeUserId = [[dataDict objectForKey:@"id"] integerValue];
+                    if (likeUserId == 1) {
+                        return YES;
+                    }
+                }
+            }
+        }
+    }
+    return NO;
     
 }
 

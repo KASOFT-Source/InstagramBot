@@ -30,6 +30,8 @@
 		54B5DEFF1DD778B2007207B1 /* RLCreateListUserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 54B5DEFD1DD778B2007207B1 /* RLCreateListUserViewController.m */; };
 		54B7B24B1DDC31D60073A669 /* RLInstagramMedia.m in Sources */ = {isa = PBXBuildFile; fileRef = 54B7B24A1DDC31D60073A669 /* RLInstagramMedia.m */; };
 		54C9113E1DDB1D0F003625F2 /* RLUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 54C9113D1DDB1D0F003625F2 /* RLUser.m */; };
+		55DDF85ED46C187A2FC067A3 /* Pods_RoundLikerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD2663BD7E8D0D800A283AD1 /* Pods_RoundLikerTests.framework */; };
+		73817FE364BBE3F97D6B3DDE /* Pods_RoundLiker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 961DE76B31877E4AA58D706D /* Pods_RoundLiker.framework */; };
 		CEEC8D7F1A14D406007E973B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEC8D7E1A14D406007E973B /* main.m */; };
 		CEEC8D881A14D406007E973B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEEC8D861A14D406007E973B /* Main.storyboard */; };
 		CEEC8D8A1A14D406007E973B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEEC8D891A14D406007E973B /* Images.xcassets */; };
@@ -94,6 +96,12 @@
 		54B7B24A1DDC31D60073A669 /* RLInstagramMedia.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RLInstagramMedia.m; path = Model/RLInstagramMedia.m; sourceTree = "<group>"; };
 		54C9113C1DDB1D0F003625F2 /* RLUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RLUser.h; path = Model/RLUser.h; sourceTree = "<group>"; };
 		54C9113D1DDB1D0F003625F2 /* RLUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RLUser.m; path = Model/RLUser.m; sourceTree = "<group>"; };
+		6C9751EB5A01A59622B59238 /* Pods-RoundLiker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RoundLiker.release.xcconfig"; path = "Pods/Target Support Files/Pods-RoundLiker/Pods-RoundLiker.release.xcconfig"; sourceTree = "<group>"; };
+		8E32AD46F0AEE026A553D8A8 /* Pods-RoundLiker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RoundLiker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RoundLiker/Pods-RoundLiker.debug.xcconfig"; sourceTree = "<group>"; };
+		8F4BA66D198EEEBEB419628B /* Pods-RoundLikerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RoundLikerTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-RoundLikerTests/Pods-RoundLikerTests.release.xcconfig"; sourceTree = "<group>"; };
+		961DE76B31877E4AA58D706D /* Pods_RoundLiker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RoundLiker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9278B9D6E21E09205AE9985 /* Pods-RoundLikerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RoundLikerTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RoundLikerTests/Pods-RoundLikerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		AD2663BD7E8D0D800A283AD1 /* Pods_RoundLikerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RoundLikerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEEC8D791A14D406007E973B /* RoundLiker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RoundLiker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEEC8D7D1A14D406007E973B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CEEC8D7E1A14D406007E973B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -110,6 +118,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				73817FE364BBE3F97D6B3DDE /* Pods_RoundLiker.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -117,12 +126,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55DDF85ED46C187A2FC067A3 /* Pods_RoundLikerTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		429E3E0CC6BBCB604C9FED00 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				961DE76B31877E4AA58D706D /* Pods_RoundLiker.framework */,
+				AD2663BD7E8D0D800A283AD1 /* Pods_RoundLikerTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		540062C11DDC6572000ADC21 /* ThridParty */ = {
 			isa = PBXGroup;
 			children = (
@@ -225,12 +244,25 @@
 			name = Model;
 			sourceTree = "<group>";
 		};
+		56458ABF6F4A36CFD5D6BCB9 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				8E32AD46F0AEE026A553D8A8 /* Pods-RoundLiker.debug.xcconfig */,
+				6C9751EB5A01A59622B59238 /* Pods-RoundLiker.release.xcconfig */,
+				A9278B9D6E21E09205AE9985 /* Pods-RoundLikerTests.debug.xcconfig */,
+				8F4BA66D198EEEBEB419628B /* Pods-RoundLikerTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		CEEC8D701A14D405007E973B = {
 			isa = PBXGroup;
 			children = (
 				CEEC8D7B1A14D406007E973B /* RoundLiker */,
 				CEEC8D951A14D406007E973B /* RoundLikerTests */,
 				CEEC8D7A1A14D406007E973B /* Products */,
+				56458ABF6F4A36CFD5D6BCB9 /* Pods */,
+				429E3E0CC6BBCB604C9FED00 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -295,9 +327,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CEEC8D9C1A14D406007E973B /* Build configuration list for PBXNativeTarget "RoundLiker" */;
 			buildPhases = (
+				7152298EE8C0F78F45E0744F /* [CP] Check Pods Manifest.lock */,
 				CEEC8D751A14D406007E973B /* Sources */,
 				CEEC8D761A14D406007E973B /* Frameworks */,
 				CEEC8D771A14D406007E973B /* Resources */,
+				50A280E8DB2368D2A5FA010B /* [CP] Embed Pods Frameworks */,
+				3495ABB3F36A6F04FFFE5FBE /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -312,9 +347,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CEEC8D9F1A14D406007E973B /* Build configuration list for PBXNativeTarget "RoundLikerTests" */;
 			buildPhases = (
+				7B42A08CCF5382F4720D3122 /* [CP] Check Pods Manifest.lock */,
 				CEEC8D8E1A14D406007E973B /* Sources */,
 				CEEC8D8F1A14D406007E973B /* Frameworks */,
 				CEEC8D901A14D406007E973B /* Resources */,
+				9E12D817720070AA8DA49107 /* [CP] Embed Pods Frameworks */,
+				952F56D61B21FBDE8DE2994B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -384,6 +422,99 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3495ABB3F36A6F04FFFE5FBE /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RoundLiker/Pods-RoundLiker-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		50A280E8DB2368D2A5FA010B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RoundLiker/Pods-RoundLiker-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7152298EE8C0F78F45E0744F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		7B42A08CCF5382F4720D3122 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		952F56D61B21FBDE8DE2994B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RoundLikerTests/Pods-RoundLikerTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9E12D817720070AA8DA49107 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-RoundLikerTests/Pods-RoundLikerTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CEEC8D751A14D406007E973B /* Sources */ = {
@@ -538,6 +669,7 @@
 		};
 		CEEC8D9D1A14D406007E973B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8E32AD46F0AEE026A553D8A8 /* Pods-RoundLiker.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = "";
@@ -551,6 +683,7 @@
 		};
 		CEEC8D9E1A14D406007E973B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6C9751EB5A01A59622B59238 /* Pods-RoundLiker.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = "";
@@ -564,6 +697,7 @@
 		};
 		CEEC8DA01A14D406007E973B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A9278B9D6E21E09205AE9985 /* Pods-RoundLikerTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -584,6 +718,7 @@
 		};
 		CEEC8DA11A14D406007E973B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8F4BA66D198EEEBEB419628B /* Pods-RoundLikerTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (

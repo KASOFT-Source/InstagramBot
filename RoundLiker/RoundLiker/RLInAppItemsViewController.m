@@ -8,6 +8,7 @@
 
 #import "RLInAppItemsViewController.h"
 #import "AppDelegate.h"
+#import "RMStore.h"
 
 @interface RLInAppItemsViewController ()<UITableViewDelegate, UITableViewDataSource>
 
@@ -25,8 +26,8 @@
     // Do any additional setup after loading the view.
     
     self.automaticallyAdjustsScrollViewInsets = NO;
-
     
+    [self loadIAPItems];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -34,11 +35,32 @@
     // Dispose of any resources that can be recreated.
 }
 
+
 - (IBAction)backButtonClick:(id)sender;
 {
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+#pragma mark: Load IAP products
+- (void)loadIAPItems;
+{
+    NSSet *products = [NSSet setWithArray:@[@"fabulousIdol", @"rootBeer", @"rubberChicken"]];
+    [[RMStore defaultStore] requestProducts:products success:^(NSArray *products, NSArray *invalidProductIdentifiers) {
+        NSLog(@"Products loaded");
+    } failure:^(NSError *error) {
+        NSLog(@"Something went wrong");
+    }];
+}
+
+
+- (void)buyItems;
+{
+    [[RMStore defaultStore] addPayment:@"waxLips" success:^(SKPaymentTransaction *transaction) {
+        NSLog(@"Product purchased");
+    } failure:^(SKPaymentTransaction *transaction, NSError *error) {
+        NSLog(@"Something went wrong");
+    }];
+}
 
 #pragma mark UITableViewDataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -54,6 +76,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 {
+    // TODO: buy items.
 }
 
 /*

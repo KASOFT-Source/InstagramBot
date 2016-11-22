@@ -1,0 +1,14 @@
+platform :ios, '8.0'
+
+use_frameworks!
+
+target 'RoundLiker' do
+	pod 'RMStore', '~> 0.7'
+end
+
+target 'RoundLikerTests' do
+
+end
+
+
+

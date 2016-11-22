@@ -1,0 +1,6 @@
+framework module Pods_RoundLiker {
+  umbrella header "Pods-RoundLiker-umbrella.h"
+
+  export *
+  module * { export * }
+}
