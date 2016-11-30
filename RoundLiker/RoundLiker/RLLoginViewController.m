@@ -166,6 +166,7 @@
     NSError *requestError = NULL;
     NSData *responseData = [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
+    
     [self handleAuth:[dict valueForKey:@"access_token"]];
     
 }

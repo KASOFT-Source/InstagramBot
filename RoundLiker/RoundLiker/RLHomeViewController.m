@@ -99,7 +99,7 @@
     self.package = RLPackageType1;
     self.processingPosition = -1;
     
-    [self restoreTransaction];
+//    [self restoreTransaction];
 }
 
 - (void)viewWillAppear:(BOOL)animated
