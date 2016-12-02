@@ -80,7 +80,7 @@
 
 - (IBAction)createButtonClick:(id)sender;
 {
-    NSString *str = [self.textView.text stringByReplacingOccurrencesOfString:@" " withString:@""];
+    NSString *str = [self.textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
     NSArray *tempList = [str componentsSeparatedByString:@","];
     NSMutableArray *userList = [[NSMutableArray alloc] init];

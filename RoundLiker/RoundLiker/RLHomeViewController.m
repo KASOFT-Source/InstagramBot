@@ -759,24 +759,26 @@
     NSURLResponse *response = NULL;
     NSError *requestError = NULL;
     NSData *responseData = [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
-
-    if ([dict objectForKey:@"data"]) {
+    if (responseData) {
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
         
-        NSArray *array = (NSArray *)[dict objectForKey:@"data"];
-        if ([array isKindOfClass:[NSArray class]] && array.count > 0) {
-            NSDictionary *dataDict = (NSDictionary *)array[0];
-            if ([dataDict isKindOfClass:[NSDictionary class]]) {
-                if ([dataDict objectForKey:@"id"]) {
-                    NSString *userId = [dataDict objectForKey:@"id"];
-                    if (userId && userId.length > 0) {
-                        return userId;
+        if ([dict objectForKey:@"data"] && [dict objectForKey:@"data"] != [NSNull null]) {
+            
+            NSArray *array = (NSArray *)[dict objectForKey:@"data"];
+            if ([array isKindOfClass:[NSArray class]] && array.count > 0) {
+                NSDictionary *dataDict = (NSDictionary *)array[0];
+                if ([dataDict isKindOfClass:[NSDictionary class]]) {
+                    if ([dataDict objectForKey:@"id"]) {
+                        NSString *userId = [dataDict objectForKey:@"id"];
+                        if (userId && userId.length > 0) {
+                            return userId;
+                        }
                     }
                 }
             }
         }
-    }
 
+    }
     return nil;
 }
 
@@ -794,7 +796,7 @@
     NSData *responseData = [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
     
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
-    if ([dict objectForKey:@"data"]) {
+    if ([dict objectForKey:@"data"] && [dict objectForKey:@"data"] != [NSNull null]) {
         
         NSArray *array = (NSArray *)[dict objectForKey:@"data"];
         if ([array isKindOfClass:[NSArray class]] && array.count > 0) {
@@ -838,7 +840,7 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
     
     NSLog(@"Response: %@", dict);
-    if ([dict objectForKey:@"data"] && [dict objectForKey:@"data"] == [NSNull null]) {
+    if ([dict objectForKey:@"data"] && [dict objectForKey:@"data"] != [NSNull null]) {
         return RLRequestStatusSuccess;
     }
     else {
