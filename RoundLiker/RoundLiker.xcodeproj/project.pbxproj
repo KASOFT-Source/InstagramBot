@@ -19,6 +19,7 @@
 		543CEABE1DD612FC00F8A8D2 /* Corbel.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 543CEABC1DD612FC00F8A8D2 /* Corbel.ttf */; };
 		543CEAC71DD6295400F8A8D2 /* RLUserListTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 543CEAC41DD6295400F8A8D2 /* RLUserListTableViewCell.m */; };
 		543CEAC81DD6295400F8A8D2 /* RLViewerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 543CEAC61DD6295400F8A8D2 /* RLViewerTableViewCell.m */; };
+		54468EA31DF153130083E49E /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54468EA21DF153130083E49E /* StoreKit.framework */; };
 		5490EABA1DD229EE007D1BFC /* RLHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5490EAB71DD229EE007D1BFC /* RLHomeViewController.m */; };
 		5490EABB1DD229EE007D1BFC /* RLLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5490EAB91DD229EE007D1BFC /* RLLoginViewController.m */; };
 		5490EABE1DD229FE007D1BFC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5490EABD1DD229FE007D1BFC /* AppDelegate.m */; };
@@ -73,6 +74,7 @@
 		543CEAC41DD6295400F8A8D2 /* RLUserListTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RLUserListTableViewCell.m; path = View/RLUserListTableViewCell.m; sourceTree = "<group>"; };
 		543CEAC51DD6295400F8A8D2 /* RLViewerTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RLViewerTableViewCell.h; path = View/RLViewerTableViewCell.h; sourceTree = "<group>"; };
 		543CEAC61DD6295400F8A8D2 /* RLViewerTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RLViewerTableViewCell.m; path = View/RLViewerTableViewCell.m; sourceTree = "<group>"; };
+		54468EA21DF153130083E49E /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		5490EAB61DD229EE007D1BFC /* RLHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RLHomeViewController.h; sourceTree = "<group>"; };
 		5490EAB71DD229EE007D1BFC /* RLHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RLHomeViewController.m; sourceTree = "<group>"; };
 		5490EAB81DD229EE007D1BFC /* RLLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RLLoginViewController.h; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				73817FE364BBE3F97D6B3DDE /* Pods_RoundLiker.framework in Frameworks */,
+				54468EA31DF153130083E49E /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,6 +139,7 @@
 		429E3E0CC6BBCB604C9FED00 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				54468EA21DF153130083E49E /* StoreKit.framework */,
 				961DE76B31877E4AA58D706D /* Pods_RoundLiker.framework */,
 				AD2663BD7E8D0D800A283AD1 /* Pods_RoundLikerTests.framework */,
 			);
@@ -375,6 +379,8 @@
 				TargetAttributes = {
 					CEEC8D781A14D406007E973B = {
 						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = V92AHRPNUD;
+						ProvisioningStyle = Automatic;
 					};
 					CEEC8D911A14D406007E973B = {
 						CreatedOnToolsVersion = 6.1;
@@ -674,11 +680,15 @@
 			baseConfigurationReference = 8E32AD46F0AEE026A553D8A8 /* Pods-RoundLiker.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Tyler McNee (T8U6653HPK)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Tyler McNee (T8U6653HPK)";
+				DEVELOPMENT_TEAM = V92AHRPNUD;
 				INFOPLIST_FILE = RoundLiker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.palmsoft.EngagementLiker;
 				PRODUCT_NAME = EngagementLiker;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -688,11 +698,15 @@
 			baseConfigurationReference = 6C9751EB5A01A59622B59238 /* Pods-RoundLiker.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Tyler McNee (T8U6653HPK)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				DEVELOPMENT_TEAM = V92AHRPNUD;
 				INFOPLIST_FILE = RoundLiker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.palmsoft.EngagementLiker;
 				PRODUCT_NAME = EngagementLiker;
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;

@@ -99,7 +99,7 @@
     self.package = RLPackageType1;
     self.processingPosition = -1;
     
-//    [self restoreTransaction];
+    [self restoreTransaction];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -794,28 +794,29 @@
     NSURLResponse *response = NULL;
     NSError *requestError = NULL;
     NSData *responseData = [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
-    
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
-    if ([dict objectForKey:@"data"] && [dict objectForKey:@"data"] != [NSNull null]) {
+    if (responseData) {
         
-        NSArray *array = (NSArray *)[dict objectForKey:@"data"];
-        if ([array isKindOfClass:[NSArray class]] && array.count > 0) {
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
+        if ([dict objectForKey:@"data"] && [dict objectForKey:@"data"] != [NSNull null]) {
             
-            NSMutableArray *mediaArray = [[NSMutableArray alloc] init];
-            
-            for (int i = 0; i < array.count; i++) {
-
-                NSDictionary *dataDict = array[i];
-                RLInstagramMedia *media = [[RLInstagramMedia alloc] initWithJson: dataDict];
-                [mediaArray addObject:media];
+            NSArray *array = (NSArray *)[dict objectForKey:@"data"];
+            if ([array isKindOfClass:[NSArray class]] && array.count > 0) {
+                
+                NSMutableArray *mediaArray = [[NSMutableArray alloc] init];
+                
+                for (int i = 0; i < array.count; i++) {
+                    
+                    NSDictionary *dataDict = array[i];
+                    RLInstagramMedia *media = [[RLInstagramMedia alloc] initWithJson: dataDict];
+                    [mediaArray addObject:media];
+                }
+                
+                NSArray *result  = [NSArray arrayWithArray:mediaArray];
+                
+                return result;
             }
-            
-            NSArray *result  = [NSArray arrayWithArray:mediaArray];
-            
-            return result;
         }
     }
-    
     return nil;
 }
 
@@ -837,21 +838,24 @@
     [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
     
     NSData *responseData = [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
-    
-    NSLog(@"Response: %@", dict);
-    if ([dict objectForKey:@"data"] && [dict objectForKey:@"data"] != [NSNull null]) {
-        return RLRequestStatusSuccess;
-    }
-    else {
-        if ([dict objectForKey:@"meta"]) {
-            NSDictionary *metaDict = [dict objectForKey:@"meta"];
-            
-            if ([metaDict objectForKey:@"code"]) {
-                NSUInteger code = [[metaDict objectForKey:@"code"] integerValue];
-                if (code == 429) {
-                    // Request limited value.
-                    return RLRequestStatusFailByLimited;
+    if (responseData) {
+        
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
+        
+        NSLog(@"Response: %@", dict);
+        if ([dict objectForKey:@"data"] && [dict objectForKey:@"data"] != [NSNull null]) {
+            return RLRequestStatusSuccess;
+        }
+        else {
+            if ([dict objectForKey:@"meta"]) {
+                NSDictionary *metaDict = [dict objectForKey:@"meta"];
+                
+                if ([metaDict objectForKey:@"code"]) {
+                    NSUInteger code = [[metaDict objectForKey:@"code"] integerValue];
+                    if (code == 429) {
+                        // Request limited value.
+                        return RLRequestStatusFailByLimited;
+                    }
                 }
             }
         }
@@ -859,7 +863,6 @@
     return RLRequestStatusFail;
     
 }
-
 
 - (BOOL)getLikeStatusOfMediaId:(NSString *)mediaId{
     
@@ -879,28 +882,31 @@
     [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
     
     NSData *responseData = [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
-    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
     
-    NSLog(@"Response: %@", dict);
-    if ([dict objectForKey:@"data"] && [dict objectForKey:@"data"] == [NSNull null]) {
-
-        NSArray *array = (NSArray *)[dict objectForKey:@"data"];
-
-        if ([array isKindOfClass:[NSArray class]] && array.count > 0) {
-            for (int i = 0; i < array.count; i++) {
-                
-                NSDictionary *dataDict = array[i];
-                if ([dataDict objectForKey:@"id"]) {
-                    NSUInteger likeUserId = [[dataDict objectForKey:@"id"] integerValue];
-                    if (likeUserId == 1) {
-                        return YES;
+    if (responseData) {
+        
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
+        
+        NSLog(@"Response: %@", dict);
+        if ([dict objectForKey:@"data"] && [dict objectForKey:@"data"] == [NSNull null]) {
+            
+            NSArray *array = (NSArray *)[dict objectForKey:@"data"];
+            
+            if ([array isKindOfClass:[NSArray class]] && array.count > 0) {
+                for (int i = 0; i < array.count; i++) {
+                    
+                    NSDictionary *dataDict = array[i];
+                    if ([dataDict objectForKey:@"id"]) {
+                        NSUInteger likeUserId = [[dataDict objectForKey:@"id"] integerValue];
+                        if (likeUserId == 1) {
+                            return YES;
+                        }
                     }
                 }
             }
         }
     }
     return NO;
-    
 }
 
 @end
