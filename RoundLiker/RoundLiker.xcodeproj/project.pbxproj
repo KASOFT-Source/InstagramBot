@@ -104,7 +104,7 @@
 		961DE76B31877E4AA58D706D /* Pods_RoundLiker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RoundLiker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9278B9D6E21E09205AE9985 /* Pods-RoundLikerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RoundLikerTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-RoundLikerTests/Pods-RoundLikerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		AD2663BD7E8D0D800A283AD1 /* Pods_RoundLikerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RoundLikerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CEEC8D791A14D406007E973B /* EngagementLiker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EngagementLiker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEEC8D791A14D406007E973B /* Kensai Studio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Kensai Studio.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEEC8D7D1A14D406007E973B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CEEC8D7E1A14D406007E973B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		CEEC8D871A14D406007E973B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -273,7 +273,7 @@
 		CEEC8D7A1A14D406007E973B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CEEC8D791A14D406007E973B /* EngagementLiker.app */,
+				CEEC8D791A14D406007E973B /* Kensai Studio.app */,
 				CEEC8D921A14D406007E973B /* RoundLikerTests.xctest */,
 			);
 			name = Products;
@@ -344,7 +344,7 @@
 			);
 			name = RoundLiker;
 			productName = RoundLiker;
-			productReference = CEEC8D791A14D406007E973B /* EngagementLiker.app */;
+			productReference = CEEC8D791A14D406007E973B /* Kensai Studio.app */;
 			productType = "com.apple.product-type.application";
 		};
 		CEEC8D911A14D406007E973B /* RoundLikerTests */ = {
@@ -379,7 +379,7 @@
 				TargetAttributes = {
 					CEEC8D781A14D406007E973B = {
 						CreatedOnToolsVersion = 6.1;
-						DevelopmentTeam = V92AHRPNUD;
+						DevelopmentTeam = DGB22U9UZU;
 						ProvisioningStyle = Automatic;
 					};
 					CEEC8D911A14D406007E973B = {
@@ -681,12 +681,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Tyler McNee (T8U6653HPK)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Tyler McNee (T8U6653HPK)";
-				DEVELOPMENT_TEAM = V92AHRPNUD;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = DGB22U9UZU;
 				INFOPLIST_FILE = RoundLiker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.palmsoft.EngagementLiker;
-				PRODUCT_NAME = EngagementLiker;
+				PRODUCT_BUNDLE_IDENTIFIER = studio.kensai.KensaiApp;
+				PRODUCT_NAME = "Kensai Studio";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -699,12 +699,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Tyler McNee (T8U6653HPK)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				DEVELOPMENT_TEAM = V92AHRPNUD;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = DGB22U9UZU;
 				INFOPLIST_FILE = RoundLiker/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.palmsoft.EngagementLiker;
-				PRODUCT_NAME = EngagementLiker;
+				PRODUCT_BUNDLE_IDENTIFIER = studio.kensai.KensaiApp;
+				PRODUCT_NAME = "Kensai Studio";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = 1;

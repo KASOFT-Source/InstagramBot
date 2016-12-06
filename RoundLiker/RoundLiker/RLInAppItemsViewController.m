@@ -51,14 +51,12 @@
 #pragma mark: Load IAP products
 - (void)loadIAPItems;
 {
-//    NSSet *products = [NSSet setWithArray:@[@"com.lykan.LuxuryClosetT.productId001"]];
-//    [[RMStore defaultStore] requestProducts:products success:^(NSArray *products, NSArray *invalidProductIdentifiers) {
-//        NSLog(@"Products loaded: %@", products);
-//    } failure:^(NSError *error) {
-//        NSLog(@"Something went wrong");
-//    }];
-    
-    [self requestProUpgradeProductData];
+    NSSet *products = [NSSet setWithArray:@[@"studio.kensai.pro1"]];
+    [[RMStore defaultStore] requestProducts:products success:^(NSArray *products, NSArray *invalidProductIdentifiers) {
+        NSLog(@"Products loaded: %@", products);
+    } failure:^(NSError *error) {
+        NSLog(@"Something went wrong");
+    }];
 }
 
 - (void)buyItems;
@@ -96,77 +94,6 @@
     // Pass the selected object to the new view controller.
 }
 */
-
-
-
-- (void) requestProductData
-{
-    NSLog(@"requestProductData");
-    SKProductsRequest *request= [[SKProductsRequest alloc] initWithProductIdentifiers: [NSSet setWithObject:kMySubscriptionFeature]];
-    request.delegate = self;
-    [request start];
-}
-
-- (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
-{
-    NSLog(@"productsRequest");
-    
-    NSArray *myProduct = [[NSArray alloc] initWithArray:response.products];
-    
-    for(SKProduct *item in myProduct)
-    {
-        
-        NSLog(@"Product title: %@" , item.localizedTitle);
-        NSLog(@"Product description: %@" , item.localizedDescription);
-        NSLog(@"Product price: %@" , item.price);
-        NSLog(@"Product id: %@" , item.productIdentifier);
-        
-        
-    }
-    
-    /*
-     for(NSString *invalidProduct in response.invalidProductIdentifiers)
-     NSLog(@"Problem in iTunes connect configuration for product: %@", invalidProduct);
-     */
-    
-    for (NSString *invalidProductId in response.invalidProductIdentifiers)
-    {
-        NSLog(@"Problem in iTunes connect configuration for product: %@" , invalidProductId);
-    }
-    
-}
-
-#pragma mark - PaymentQueue
-
--(void)paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray *)transactions
-{
-}
-
--(void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
-{
-}
-
--(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
-{
-}
-
--(void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
-{
-}
-
-#pragma mark - Other
-
-
-- (void)requestProUpgradeProductData
-{
-    NSSet *productIdentifiers = [NSSet setWithObject:kMySubscriptionFeature];
-    productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
-    productsRequest.delegate = self;
-    [productsRequest start];
-    
-    // we will release the request object in the delegate callback
-}
-
 
 
 
