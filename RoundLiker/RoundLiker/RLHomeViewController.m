@@ -14,6 +14,8 @@
 #import "RLUser.h"
 #import "RLInstagramMedia.h"
 #import "RLSaveItemsViewController.h"
+#import "RLInAppItemsViewController.h"
+
 #import "RMStore.h"
 
 #define RGB(r, g, b, a) \
@@ -22,7 +24,7 @@
 #define kLIKEPHOTOS 2
 #define kMAXLIKEPHOTOS 5
 
-@interface RLHomeViewController () <RLLoginProtocol, RLCreateListUserProtocol,UITableViewDelegate, UITableViewDataSource, RLSaveItemsDelegate>
+@interface RLHomeViewController () <RLLoginProtocol, RLCreateListUserProtocol,UITableViewDelegate, UITableViewDataSource, RLSaveItemsDelegate, RLInAppItemsViewControllerProfocol>
 
 #pragma mark Properties
 
@@ -60,8 +62,6 @@
 
 @property (nonatomic) BOOL stopProcessing;
 
-@property (nonatomic) RLPackageType package;
-
 #pragma mark IBAction
 - (IBAction)inforButtonClick:(id)sender;
 - (IBAction)powerButtonClick:(id)sender;
@@ -96,7 +96,6 @@
     
     self.mediaDictionary = [[NSMutableDictionary alloc] init];
     
-    self.package = RLPackageType1;
     self.processingPosition = -1;
     
     [self restoreTransaction];
@@ -140,52 +139,86 @@
 
 - (void)loadPurchasePackage;
 {
-    switch (self.package) {
-        case RLPackageTypeFree:
-        {
-            self.userListLabel.text = @"User List (Allow 1)";
-            [self.packageButton setTitle:@"FREE" forState:UIControlStateNormal];
-        }
-            break;
-        case RLPackageType1:
-        {
-            self.userListLabel.text = @"User List (Allow 5)";
-            [self.packageButton setTitle:@"PACKAGE 1: 23 days left" forState:UIControlStateNormal];
-            [self.packageButton setImage:nil forState:UIControlStateNormal];
-        }
-            break;
-        case RLPackageType2:
-        {
-            self.userListLabel.text = @"User List (Allow 10)";
-            [self.packageButton setTitle:@"PACKAGE 2: 23 days left" forState:UIControlStateNormal];
-            [self.packageButton setImage:nil forState:UIControlStateNormal];
+    
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    
+    if ([ud objectForKey:kCheckoutKeyIdenfitier] &&
+        [ud objectForKey:kCheckoutKeyName] &&
+        [ud objectForKey:kCheckoutDateKey] &&
+        [ud objectForKey:kCheckoutKeyDescription]) {
+        
+        NSString *itemName = [ud objectForKey:kCheckoutKeyName];
+        NSString *itemDesc = [ud objectForKey:kCheckoutKeyDescription];
 
-        }
-            break;
-        case RLPackageType3:
-        {
-            self.userListLabel.text = @"User List (Allow 15)";
-            [self.packageButton setTitle:@"PACKAGE 3: 23 days left" forState:UIControlStateNormal];
-            [self.packageButton setImage:nil forState:UIControlStateNormal];
-
-        }
-            break;
-        case RLPackageType4:
-        {
-            self.userListLabel.text = @"User List (Unlimited)";
-            [self.packageButton setTitle:@"PACKAGE 4: 23 days left" forState:UIControlStateNormal];
-            [self.packageButton setImage:nil forState:UIControlStateNormal];
-
-        }
-            break;
+        NSDate *date = [ud objectForKey:kCheckoutDateKey];
+        
+        NSTimeInterval monthInSecond = 60 * 60 * 24 * 29;
+        if ([[date dateByAddingTimeInterval: monthInSecond] compare:[NSDate date]] == NSOrderedDescending) {
             
-        default:
-            break;
+            // Show the alert item still in time
+            NSTimeInterval timeRemaining = [[NSDate date] timeIntervalSinceDate:date];
+            CGFloat dateRemaining = 30 - timeRemaining / (60 * 60 * 24);
+            
+            NSString *title = [NSString stringWithFormat:@"%@: %.0f days left", itemName, dateRemaining];
+            
+            self.userListLabel.text = itemDesc;
+            [self.packageButton setTitle:title forState:UIControlStateNormal];
+            [self.packageButton setImage:nil forState:UIControlStateNormal];
+
+        }
+        else {
+            
+            // Item expire: ask user buy the new previous items.
+            [ud setObject:nil forKey:kCheckoutKeyIdenfitier];
+            [ud setObject:nil forKey:kCheckoutKeyName];
+            [ud setObject:nil forKey:kCheckoutKeyDescription];
+            [ud setObject:nil forKey:kCheckoutDateKey];
+            
+            [self showExpireItemMessage];
+        }
     }
+    else {
+        
+        self.userListLabel.text = @"User List (Allow 1)";
+        [self.packageButton setTitle:@"FREE" forState:UIControlStateNormal];
+
+    }
+
     
     // TODO: Load data from Apple server
 }
 
+- (void)showExpireItemMessage;
+{
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Message"
+                                                                   message:@"We're out of the purchase package. Do you want to buy it?"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"NO"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       
+                                                       [alert dismissViewControllerAnimated:YES completion:nil];
+                                                   }];
+    
+    [alert addAction:cancel];
+
+    UIAlertAction* buyButton = [UIAlertAction actionWithTitle:@"YES"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       
+                                                       [alert dismissViewControllerAnimated:YES completion:nil];
+                                                       
+                                                       [self performSegueWithIdentifier:@"InAppItemsSegue" sender:nil];
+                                                   }];
+    
+    [alert addAction:buyButton];
+
+    [self presentViewController:alert animated:YES completion:nil];
+
+
+}
 - (void)updateUI;
 {
     self.intervalLabel.layer.borderColor = RGB(71, 87, 103, 1).CGColor;
@@ -477,6 +510,17 @@
 
         }
     }
+    if ([segue.identifier isEqualToString:@"InAppItemsSegue"]) {
+        
+        RLInAppItemsViewController *controller = (RLInAppItemsViewController *)segue.destinationViewController;
+        controller.delegate = self;
+    }
+}
+
+#pragma mark: RLInAppItemsViewControllerProtocol
+- (void)buyItemSuccessed;
+{
+    [self loadPurchasePackage];
 }
 
 

@@ -10,18 +10,18 @@
 #import "AppDelegate.h"
 #import "StoreKit/StoreKit.h"
 #import "RLInAppItemTableViewCell.h"
+#import "RMStore.h"
+#import "RLEnumeration.h"
 
 #define kMySubscriptionFeature @"studio.kensai.pro10"
 
-@interface RLInAppItemsViewController ()<UITableViewDelegate, UITableViewDataSource, SKProductsRequestDelegate, SKProductsRequestDelegate, SKPaymentTransactionObserver, RLInAppItemTableViewCellProtocol>
-{
-    SKProduct *proUpgradeProduct;
-    SKProductsRequest *productsRequest;
-    
-}
+@interface RLInAppItemsViewController ()<UITableViewDelegate, UITableViewDataSource, RLInAppItemTableViewCellProtocol>
 
-@property(weak,nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+
 @property (nonatomic, strong) NSArray *items;
+@property (nonatomic, strong) NSArray *itemIds;
 
 
 - (IBAction)backButtonClick:(id)sender;
@@ -35,9 +35,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.itemIds = @[kMySubscriptionFeature];
     self.automaticallyAdjustsScrollViewInsets = NO;
     
-    [self requestProductData];
+    [self loadIAPItems];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -52,28 +53,61 @@
 }
 
 #pragma mark: Load IAP products
-//- (void)loadIAPItems;
-//{
-//    NSSet *products = [NSSet setWithArray:@[@"studio.kensai.pro10"]];
-//    [[RMStore defaultStore] requestProducts:products success:^(NSArray *products, NSArray *invalidProductIdentifiers) {
-//        NSLog(@"Products loaded: %@", products);
-//    } failure:^(NSError *error) {
-//        NSLog(@"Something went wrong");
-//    }];
-//}
+- (void)loadIAPItems;
+{
+    NSSet *products = [NSSet setWithArray:self.itemIds];
+    [self.activityIndicator startAnimating];
 
-//- (void)buyItems;
-//{
-//    [[RMStore defaultStore] addPayment:@"studio.kensai.pro10" success:^(SKPaymentTransaction *transaction) {
-//        NSLog(@"Product purchased");
-//    } failure:^(SKPaymentTransaction *transaction, NSError *error) {
-//        NSLog(@"Something went wrong");
-//    }];
-//}
+    [[RMStore defaultStore] requestProducts:products success:^(NSArray *products, NSArray *invalidProductIdentifiers) {
+        NSLog(@"Products loaded: %@", products);
+
+        [self.activityIndicator stopAnimating];
+
+        self.items = products;
+        [self.tableView reloadData];
+        
+
+    } failure:^(NSError *error) {
+        NSLog(@"Something went wrong");
+        [self.activityIndicator stopAnimating];
+    }];
+}
 
 - (void)buyItemsAtPosition:(NSUInteger)position;
 {
-    
+    [self.activityIndicator startAnimating];
+
+    SKProduct *item = self.items[position];
+    [[RMStore defaultStore] addPayment:item.productIdentifier success:^(SKPaymentTransaction *transaction) {
+        
+        [self.activityIndicator stopAnimating];
+        // Update the item buyed.
+
+        NSLog(@"Product purchased");
+        // Save the trasaction of item.
+        
+        NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+        
+        [ud setObject:item.productIdentifier forKey:kCheckoutKeyIdenfitier];
+        [ud setObject:item.localizedTitle forKey:kCheckoutKeyName];
+        [ud setObject:item.localizedDescription forKey:kCheckoutKeyDescription];
+
+        [ud setObject:[NSDate date] forKey:kCheckoutDateKey];
+        [ud synchronize];
+        
+        if ([self.delegate respondsToSelector:@selector(buyItemSuccessed)]) {
+            [self.delegate buyItemSuccessed];
+        }
+        
+        [self.navigationController popViewControllerAnimated:YES];
+
+    } failure:^(SKPaymentTransaction *transaction, NSError *error) {
+        NSLog(@"Something went wrong");
+        [self.activityIndicator stopAnimating];
+        
+        [self showFailMessage: transaction.error.localizedDescription];
+
+    }];
 }
 
 #pragma mark UITableViewDataSource
@@ -87,98 +121,112 @@
     SKProduct *item = self.items[indexPath.row];
 
     RLInAppItemTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"InAppItemTableViewCell"];
-    cell.nameLabel.text = item.localizedTitle;
     cell.indexPath = indexPath;
     cell.delegate = self;
     
-//    NSLog(@"Product title: %@" , item.localizedTitle);
-//    NSLog(@"Product description: %@" , item.localizedDescription);
-//    NSLog(@"Product price: %@" , item.price);
-//    NSLog(@"Product id: %@" , item.productIdentifier);
+    NSLocale *locale = item.priceLocale;
+    NSString *symbol = [locale objectForKey:NSLocaleCurrencySymbol];
 
+    cell.nameLabel.text = [NSString stringWithFormat:@"%@ %@%@", item.localizedTitle, symbol, item.price];
     return cell;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
-{
-    // TODO: buy items.
-//    [self buyItems];
 }
 
 #pragma mark RLInAppItemTableViewCellProtocol
 - (void)buyButtonClick:(NSIndexPath *)indexPath;
 {
-    [self buyItemsAtPosition: indexPath.row];
-}
-/*
-#pragma mark - Navigation
+    NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
+    if ([ud objectForKey:kCheckoutKeyName] && [ud objectForKey:kCheckoutDateKey]) {
+        
+        NSDate *date = [ud objectForKey:kCheckoutDateKey];
+        
+        NSTimeInterval monthInSecond = 60 * 60 * 24 * 29;
+        if ([[date dateByAddingTimeInterval: monthInSecond] compare:[NSDate date]] == NSOrderedDescending) {
+            
+            // Show the alert item still in time
+            NSTimeInterval timeRemaining = [[NSDate date] timeIntervalSinceDate:date];
+            CGFloat dateRemaining = 30 - timeRemaining / (60 * 60 * 24);
+            
+            NSString *message = [NSString stringWithFormat:@"You still have %.0f date. Do you want to continue to buy item?", dateRemaining];
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Message"
+                                                                           message:message
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"Cancel"
+                                                             style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction * action) {
+                                                               
+                                                               [alert dismissViewControllerAnimated:YES completion:nil];
+                                                               
+                                                           }];
+            
+            [alert addAction:cancel];
+            
+            UIAlertAction* buyButton = [UIAlertAction actionWithTitle:@"Buy"
+                                                             style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction * action) {
+                                                               
+                                                               [self buyItemsAtPosition: indexPath.row];
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+                                                               [alert dismissViewControllerAnimated:YES completion:nil];
+                                                           }];
+            [alert addAction:buyButton];
+            
+            [self presentViewController:alert animated:YES completion:nil];
 
-- (void) requestProductData
-{
-    
-    NSLog(@"requestProductData");
-    SKProductsRequest *request= [[SKProductsRequest alloc] initWithProductIdentifiers: [NSSet setWithObject:kMySubscriptionFeature]];
-    request.delegate = self;
-    [request start];
-}
-
-- (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
-{
-    NSLog(@"productsRequest");
-    
-    self.items = [[NSArray alloc] initWithArray:response.products];
-    
-    [self.tableView reloadData];
-    /*
-     for(NSString *invalidProduct in response.invalidProductIdentifiers)
-     NSLog(@"Problem in iTunes connect configuration for product: %@", invalidProduct);
-     */
-    
-    for (NSString *invalidProductId in response.invalidProductIdentifiers)
-    {
-        NSLog(@"Problem in iTunes connect configuration for product: %@" , invalidProductId);
+        }
+        else {
+            [self buyItemsAtPosition: indexPath.row];
+        }
     }
+    else {
+        [self buyItemsAtPosition: indexPath.row];
+        
+    }
+}
+
+
+- (void)showSuccessMessage;
+{
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Message"
+                                                                   message:@"Thank you for purchase!"
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"OK"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       
+                                                       if ([self.delegate respondsToSelector:@selector(buyItemSuccessed)]) {
+                                                           [self.delegate buyItemSuccessed];
+                                                       }
+                                                       
+                                                       [self.navigationController popViewControllerAnimated:YES];
+                                                   }];
+    
+    [alert addAction:cancel];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+
+}
+
+- (void)showFailMessage:(NSString *)message;
+{
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Message"
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"OK"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       
+                                                       [alert dismissViewControllerAnimated:YES completion:nil];
+                                                   }];
+    
+    [alert addAction:cancel];
+    
+    [self presentViewController:alert animated:YES completion:nil];
     
 }
-
-#pragma mark - PaymentQueue
-
--(void)paymentQueue:(SKPaymentQueue *)queue removedTransactions:(NSArray *)transactions
-{
-}
-
--(void)paymentQueue:(SKPaymentQueue *)queue restoreCompletedTransactionsFailedWithError:(NSError *)error
-{
-}
-
--(void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
-{
-}
-
--(void)paymentQueueRestoreCompletedTransactionsFinished:(SKPaymentQueue *)queue
-{
-}
-
-#pragma mark - Other
-
-
-- (void)requestProUpgradeProductData
-{
-    NSSet *productIdentifiers = [NSSet setWithObject:kMySubscriptionFeature];
-    productsRequest = [[SKProductsRequest alloc] initWithProductIdentifiers:productIdentifiers];
-    productsRequest.delegate = self;
-    [productsRequest start];
-    
-    // we will release the request object in the delegate callback
-}
-
-
 
 @end

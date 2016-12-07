@@ -8,7 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol RLInAppItemsViewControllerProfocol <NSObject>
+
+- (void)buyItemSuccessed;
+
+@end
 
 @interface RLInAppItemsViewController : UIViewController
+
+@property (weak, nonatomic) id<RLInAppItemsViewControllerProfocol> delegate;
 
 @end
