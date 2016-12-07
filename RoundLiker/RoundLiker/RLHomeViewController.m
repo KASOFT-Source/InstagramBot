@@ -61,6 +61,7 @@
 @property (nonatomic) NSInteger processingPosition;
 
 @property (nonatomic) BOOL stopProcessing;
+@property (nonatomic) RLPackageType package;
 
 #pragma mark IBAction
 - (IBAction)inforButtonClick:(id)sender;
@@ -139,17 +140,17 @@
 
 - (void)loadPurchasePackage;
 {
-    
+    // Get saved information.
     NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];
     
     if ([ud objectForKey:kCheckoutKeyIdenfitier] &&
         [ud objectForKey:kCheckoutKeyName] &&
         [ud objectForKey:kCheckoutDateKey] &&
         [ud objectForKey:kCheckoutKeyDescription]) {
-        
+
+        NSString *itemIdentifier = [ud objectForKey:kCheckoutKeyIdenfitier];
         NSString *itemName = [ud objectForKey:kCheckoutKeyName];
         NSString *itemDesc = [ud objectForKey:kCheckoutKeyDescription];
-
         NSDate *date = [ud objectForKey:kCheckoutDateKey];
         
         NSTimeInterval monthInSecond = 60 * 60 * 24 * 29;
@@ -164,7 +165,16 @@
             self.userListLabel.text = itemDesc;
             [self.packageButton setTitle:title forState:UIControlStateNormal];
             [self.packageButton setImage:nil forState:UIControlStateNormal];
-
+            
+            int count = 1;
+            
+            for (NSString *identifier in ITEMS_ARRAY) {
+                if ([itemIdentifier isEqualToString:identifier]) {
+                    self.package = count;
+                    break;
+                }
+                count++;
+            }
         }
         else {
             
@@ -174,18 +184,17 @@
             [ud setObject:nil forKey:kCheckoutKeyDescription];
             [ud setObject:nil forKey:kCheckoutDateKey];
             
+            self.package = RLPackageTypeFree;
             [self showExpireItemMessage];
         }
     }
     else {
+
+        self.package = RLPackageTypeFree;
         
         self.userListLabel.text = @"User List (Allow 1)";
         [self.packageButton setTitle:@"FREE" forState:UIControlStateNormal];
-
     }
-
-    
-    // TODO: Load data from Apple server
 }
 
 - (void)showExpireItemMessage;
@@ -199,6 +208,9 @@
                                                      style:UIAlertActionStyleDefault
                                                    handler:^(UIAlertAction * action) {
                                                        
+                                                       self.userListLabel.text = @"User List (Allow 1)";
+                                                       [self.packageButton setTitle:@"FREE" forState:UIControlStateNormal];
+
                                                        [alert dismissViewControllerAnimated:YES completion:nil];
                                                    }];
     
@@ -208,6 +220,9 @@
                                                      style:UIAlertActionStyleDefault
                                                    handler:^(UIAlertAction * action) {
                                                        
+                                                       self.userListLabel.text = @"User List (Allow 1)";
+                                                       [self.packageButton setTitle:@"FREE" forState:UIControlStateNormal];
+
                                                        [alert dismissViewControllerAnimated:YES completion:nil];
                                                        
                                                        [self performSegueWithIdentifier:@"InAppItemsSegue" sender:nil];

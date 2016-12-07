@@ -13,8 +13,6 @@
 #import "RMStore.h"
 #import "RLEnumeration.h"
 
-#define kMySubscriptionFeature @"studio.kensai.pro10"
-
 @interface RLInAppItemsViewController ()<UITableViewDelegate, UITableViewDataSource, RLInAppItemTableViewCellProtocol>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -35,7 +33,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.itemIds = @[kMySubscriptionFeature];
+    self.itemIds = ITEMS_ARRAY;
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     [self loadIAPItems];
@@ -91,7 +89,6 @@
         [ud setObject:item.productIdentifier forKey:kCheckoutKeyIdenfitier];
         [ud setObject:item.localizedTitle forKey:kCheckoutKeyName];
         [ud setObject:item.localizedDescription forKey:kCheckoutKeyDescription];
-
         [ud setObject:[NSDate date] forKey:kCheckoutDateKey];
         [ud synchronize];
         
@@ -180,7 +177,6 @@
     }
     else {
         [self buyItemsAtPosition: indexPath.row];
-        
     }
 }
 
