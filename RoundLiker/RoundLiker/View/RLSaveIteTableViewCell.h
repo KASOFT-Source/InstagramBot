@@ -22,6 +22,6 @@
 
 @property (nonatomic, strong) NSIndexPath *indexPath;
 
-@property (weak, nonatomic) id<RLSaveIteTableViewCellProtocol> delegate;;
+@property (weak, nonatomic) id<RLSaveIteTableViewCellProtocol> delegate;
 
 @end

@@ -8,6 +8,23 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RLInAppItemTableViewCell : UITableViewCell
+@protocol RLInAppItemTableViewCellProtocol <NSObject>
+
+- (void)buyButtonClick:(NSIndexPath *)indexPath;
 
 @end
+
+
+@interface RLInAppItemTableViewCell : UITableViewCell
+
+@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
+@property (weak, nonatomic) IBOutlet UIImageView *iconView;
+@property (weak, nonatomic) IBOutlet UIButton *buyButton;
+
+@property (nonatomic, strong) NSIndexPath *indexPath;
+
+@property (weak, nonatomic) id<RLInAppItemTableViewCellProtocol> delegate;
+
+
+@end
+

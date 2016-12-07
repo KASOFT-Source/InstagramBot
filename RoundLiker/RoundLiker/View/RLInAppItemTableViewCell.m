@@ -9,9 +9,6 @@
 #import "RLInAppItemTableViewCell.h"
 @interface RLInAppItemTableViewCell()
 
-@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
-@property (weak, nonatomic) IBOutlet UIImageView *iconView;
-@property (weak, nonatomic) IBOutlet UIButton *buyButton;
 
 - (IBAction)buyButtonClick:(id)sender;
 
@@ -34,5 +31,10 @@
 - (IBAction)buyButtonClick:(id)sender;
 {
     // IAP Here.
+    
+    if ([self.delegate respondsToSelector:@selector(buyButtonClick:)]) {
+        [self.delegate buyButtonClick: self.indexPath];
+    }
 }
+
 @end
