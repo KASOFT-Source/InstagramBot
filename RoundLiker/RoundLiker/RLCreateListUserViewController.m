@@ -34,11 +34,18 @@
         self.createButton.enabled = NO;
         self.createButton.alpha = 0.6;
     }
+    [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hiddenKeyboard)]];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+- (void)hiddenKeyboard;
+{
+    [self.textView resignFirstResponder];
 }
 
 #pragma mark: UITextViewDelegate
