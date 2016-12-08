@@ -562,6 +562,8 @@
                                                    // Remove cookie of instagram.
                                                    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
                                                    for (NSHTTPCookie *cookie in cookieStorage.cookies) {
+                                                       
+                                                       NSLog(@"%@", cookie);
                                                        if ([cookie.domain isEqualToString:@"www.instagram.com"] ||
                                                            [cookie.domain isEqualToString:@"api.instagram.com"]){
                                                            [cookieStorage deleteCookie:cookie];
@@ -572,8 +574,6 @@
                                                    
                                                    // Show login page again.
                                                    [self showLoginViewController];
-
-                                                   
                                                }];
     
     [alert addAction:ok];
@@ -740,33 +740,61 @@
     }
 }
 
+- (void)scheduleLocalNotificationAtFireDate:(NSDate *)fireDate
+                             repeatInterval:(NSCalendarUnit)repeatInterval
+                                      title:(NSString *)title;
+{
+    UILocalNotification *notification = [[UILocalNotification alloc] init];
+    notification.timeZone = [NSTimeZone defaultTimeZone];
+    notification.soundName = UILocalNotificationDefaultSoundName;
+    notification.alertBody = title;
+    notification.userInfo = @{};
+    notification.repeatInterval = repeatInterval;
+    notification.fireDate = fireDate;
+    
+    [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+}
+
 - (void)showDoneMessage;
 {
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Reload viewer table with data
-        // Show Done message
+    UIApplicationState state = [[UIApplication sharedApplication] applicationState];
+    if (state == UIApplicationStateBackground || state == UIApplicationStateInactive) {
+        //Do checking here.
         
-        self.usersTableView.userInteractionEnabled = YES;
-        [self.activityIndicator stopAnimating];
-
-        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Message"
-                                                                       message:@"Done"
-                                                                preferredStyle:UIAlertControllerStyleAlert];
+        // Show the local notification.
+        [self scheduleLocalNotificationAtFireDate:[[NSDate date] dateByAddingTimeInterval:3]
+                                   repeatInterval:0
+                                            title:@"DONE"];
+    }
+    else {
         
-        UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"OK"
-                                                         style:UIAlertActionStyleDefault
-                                                       handler:^(UIAlertAction * action) {
-                                                           
-                                                           [alert dismissViewControllerAnimated:YES completion:nil];
-                                                           [self.startButton setTitle:@"START" forState:UIControlStateNormal];
-
-                                                       }];
-        
-        [alert addAction:cancel];
-        
-        [self presentViewController:alert animated:YES completion:nil];
-    });
+        // Show the message
+        dispatch_async(dispatch_get_main_queue(), ^{
+            // Reload viewer table with data
+            // Show Done message
+            
+            self.usersTableView.userInteractionEnabled = YES;
+            [self.activityIndicator stopAnimating];
+            
+            UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Message"
+                                                                           message:@"Done"
+                                                                    preferredStyle:UIAlertControllerStyleAlert];
+            
+            UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"OK"
+                                                             style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction * action) {
+                                                               
+                                                               [alert dismissViewControllerAnimated:YES completion:nil];
+                                                               [self.startButton setTitle:@"START" forState:UIControlStateNormal];
+                                                               
+                                                           }];
+            
+            [alert addAction:cancel];
+            
+            [self presentViewController:alert animated:YES completion:nil];
+        });
+    }
 }
 
 - (void)showLimitedRequestMessage;
@@ -881,7 +909,8 @@
 
 - (RLRequestStatus)likeMediaId:(NSString *)mediaId{
     
-    NSString *strURL = [NSString stringWithFormat:@"https://api.instagram.com/v1/media/%@/likes", mediaId];
+//    NSString *strURL = [NSString stringWithFormat:@"https://api.instagram.com/v1/media/%@/likes", mediaId];
+    NSString *strURL = [NSString stringWithFormat:@"https://www.instagram.com/web/likes/%@/like/", mediaId];
     
     NSMutableURLRequest *requestData = [NSMutableURLRequest requestWithURL:
                                         [NSURL URLWithString:strURL]];
@@ -968,4 +997,91 @@
     return NO;
 }
 
+
+// Testing
+
+- (RLRequestStatus)likeMediaId1:(NSString *)mediaId{
+    
+    NSString *csrftoken;
+    NSString *mid, *sessionid;
+    
+    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (NSHTTPCookie *cookie in cookieStorage.cookies) {
+        
+        NSLog(@"%@", cookie);
+        if ([cookie.domain isEqualToString:@"www.instagram.com"] && [cookie.name isEqualToString:@"csrftoken"]){
+            csrftoken = cookie.value;
+        }
+        if ([cookie.name isEqualToString:@"mid"]){
+            mid = cookie.value;
+        }
+        if ([cookie.name isEqualToString:@"sessionid"]){
+            sessionid = cookie.value;
+        }
+
+    }
+
+    NSArray *array = [mediaId componentsSeparatedByString:@"_"];
+    if (array.count > 0) {
+        mediaId = array[0];
+    }
+    
+    //    NSString *strURL = [NSString stringWithFormat:@"https://api.instagram.com/v1/media/%@/likes", mediaId];
+    NSString *strURL = [NSString stringWithFormat:@"https://www.instagram.com/web/likes/%@/like/", mediaId];
+    
+    NSMutableURLRequest *requestData = [NSMutableURLRequest requestWithURL:
+                                        [NSURL URLWithString:strURL]];
+    [requestData setHTTPMethod:@"POST"];
+    
+    [requestData setValue:@"Content-Type" forHTTPHeaderField:@"application/x-www-form-urlencoded"];
+    [requestData setValue:@"Referer" forHTTPHeaderField:@"https://www.instagram.com/"];
+    [requestData setValue:@"Accept" forHTTPHeaderField:@"*/*"];
+//    [requestData setValue:@"User-Agent" forHTTPHeaderField:@"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/602.2.14 (KHTML, like Gecko) Version/10.0.1 Safari/602.2.14"];
+//    [requestData setValue:@"User-Agent" forHTTPHeaderField:@"Mozilla/5.0 (iPad; U; CPU OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Mobile"];
+
+    [requestData setValue:@"Origin" forHTTPHeaderField:@"https://www.instagram.com"];
+    [requestData setValue:@"X-Instagram-AJAX" forHTTPHeaderField:@"1"];
+    [requestData setValue:@"X-CSRFToken" forHTTPHeaderField:csrftoken];
+    [requestData setValue:@"mid" forHTTPHeaderField:mid];
+    [requestData setValue:@"sessionid" forHTTPHeaderField:sessionid];
+    
+    
+    [requestData setValue:@"X-Requested-With" forHTTPHeaderField:@"XMLHttpRequest"];
+
+//    NSString *post = [NSString stringWithFormat:@"access_token=%@", self.authToken];
+//    NSData *postData = [post dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
+    [requestData setHTTPBody:nil];
+    
+    NSURLResponse *response = NULL;
+    NSError *requestError = NULL;
+    
+    // Just like and don't care about the resul.
+    [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
+    
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:requestData returningResponse:&response error:&requestError];
+    if (responseData) {
+        
+        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:nil];
+        
+        NSLog(@"Response: %@", dict);
+        if ([dict objectForKey:@"data"] && [dict objectForKey:@"data"] != [NSNull null]) {
+            return RLRequestStatusSuccess;
+        }
+        else {
+            if ([dict objectForKey:@"meta"]) {
+                NSDictionary *metaDict = [dict objectForKey:@"meta"];
+                
+                if ([metaDict objectForKey:@"code"]) {
+                    NSUInteger code = [[metaDict objectForKey:@"code"] integerValue];
+                    if (code == 429) {
+                        // Request limited value.
+                        return RLRequestStatusFailByLimited;
+                    }
+                }
+            }
+        }
+    }
+    return RLRequestStatusFail;
+    
+}
 @end
