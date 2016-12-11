@@ -21,7 +21,10 @@
     [[UINavigationBar appearance] setTitleTextAttributes:
      @{ NSForegroundColorAttributeName : [UIColor whiteColor],
         NSFontAttributeName: [UIFont fontWithName:@"Corbel-Bold" size:15]}];
-
+    
+    if ([UIApplication instancesRespondToSelector:@selector(registerUserNotificationSettings:)]){
+        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound categories:nil]];
+    }
     return YES;
 }
 

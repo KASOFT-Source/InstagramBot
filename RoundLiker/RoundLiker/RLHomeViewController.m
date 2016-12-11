@@ -59,6 +59,7 @@
 @property (nonatomic) NSUInteger timeInterval;
 @property (nonatomic) NSUInteger likePhotoNumber;
 @property (nonatomic) NSInteger processingPosition;
+@property (nonatomic) NSInteger selectedPosition;
 
 @property (nonatomic) BOOL stopProcessing;
 @property (nonatomic) RLPackageType package;
@@ -98,6 +99,7 @@
     self.mediaDictionary = [[NSMutableDictionary alloc] init];
     
     self.processingPosition = -1;
+    self.selectedPosition = -1;
     
     [self restoreTransaction];
 }
@@ -324,6 +326,13 @@
             // Do nothing here
         }
         else {
+            
+            if (self.selectedPosition == indexPath.row) {
+                return;
+                
+            }
+            
+            self.selectedPosition = indexPath.row;
             
             NSMutableArray *reloadArray = [[NSMutableArray alloc] initWithObjects:indexPath, nil];
 
