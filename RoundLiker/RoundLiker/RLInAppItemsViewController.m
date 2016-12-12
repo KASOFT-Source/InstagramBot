@@ -76,8 +76,12 @@
     [self.activityIndicator startAnimating];
 
     SKProduct *item = self.items[position];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
     [[RMStore defaultStore] addPayment:item.productIdentifier success:^(SKPaymentTransaction *transaction) {
         
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
         [self.activityIndicator stopAnimating];
         // Update the item buyed.
 
@@ -99,6 +103,9 @@
         [self.navigationController popViewControllerAnimated:YES];
 
     } failure:^(SKPaymentTransaction *transaction, NSError *error) {
+        
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+
         NSLog(@"Something went wrong");
         [self.activityIndicator stopAnimating];
         
@@ -208,7 +215,7 @@
 - (void)showFailMessage:(NSString *)message;
 {
     
-    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Message"
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Payment Transaction Failed", @"")
                                                                    message:message
                                                             preferredStyle:UIAlertControllerStyleAlert];
     

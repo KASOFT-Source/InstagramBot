@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RLEnumeration.h"
 
 @protocol RLSaveItemsDelegate <NSObject>
 
@@ -19,5 +20,6 @@
 @property (nonatomic, strong) NSArray *userList;
 @property (nonatomic) BOOL save;
 @property (nonatomic, weak) id<RLSaveItemsDelegate> delegate;
+@property (nonatomic) RLPackageType package;
 
 @end

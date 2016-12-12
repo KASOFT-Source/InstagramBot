@@ -73,6 +73,8 @@
             }
             else {
                 [cell.saveButton setTitle:@"LOAD" forState:UIControlStateNormal];
+                cell.nameLabel.text = [NSString stringWithFormat:@"Slot %ld (%ld)", (long)indexPath.row, (long)slotData.count];
+
             }
         }
         else {
@@ -133,13 +135,69 @@
                 break;
         }
         
-        if ([self.delegate respondsToSelector:@selector(loadUserWithData:)]) {
-            [self.delegate loadUserWithData:self.userList];
+        if ([self checkLimitAccount: self.userList] == true) {
+
+            if ([self.delegate respondsToSelector:@selector(loadUserWithData:)]) {
+                [self.delegate loadUserWithData:self.userList];
+            }
+            
+            [self.navigationController popViewControllerAnimated:YES];
         }
-        
-        [self.navigationController popViewControllerAnimated:YES];
     }
 }
+
+- (BOOL)checkLimitAccount:(NSArray *)users;
+{
+    int limitNumber = 1;
+    switch (self.package) {
+        case RLPackageTypeFree:
+            break;
+        case RLPackageType1:
+            limitNumber = 5;
+            break;
+        case RLPackageType2:
+            limitNumber = 10;
+            break;
+        case RLPackageType3:
+            limitNumber = 15;
+            break;
+        case RLPackageType4:
+            limitNumber = 10000;
+            break;
+        default:
+            break;
+    }
+    
+    if (users.count > limitNumber) {
+        
+        [self showLimitMessage:limitNumber];
+        return false;
+    }
+    
+    return true;
+}
+
+
+- (void)showLimitMessage: (int)limitNumber;
+{
+    NSString *msg = [NSString stringWithFormat:@"Current package just allow %d account. Please upgrade for more user", limitNumber];
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Warning"
+                                                                   message:msg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"OK"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       
+                                                       [alert dismissViewControllerAnimated:YES completion:nil];
+                                                   }];
+    
+    [alert addAction:cancel];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+    
+}
+
 
 /*
 #pragma mark - Navigation

@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RLEnumeration.h"
 
 @protocol RLCreateListUserProtocol <NSObject>
 
@@ -17,5 +18,6 @@
 @interface RLCreateListUserViewController : UIViewController
 
 @property (nonatomic, weak) id<RLCreateListUserProtocol> delegate;
+@property (nonatomic) RLPackageType package;
 
 @end

@@ -98,13 +98,68 @@
         [userList addObject:user];
     }
     
-    // TODO: load the user list back to home page
-    if ([self.delegate respondsToSelector:@selector(createUserListWithData:)]) {
-        
-        // TODO: slipt the input string to get all user.
-        [self.delegate createUserListWithData:userList];
+    if ([self checkLimitAccount: userList] == true) {
+    
+        // TODO: load the user list back to home page
+        if ([self.delegate respondsToSelector:@selector(createUserListWithData:)]) {
+            
+            // TODO: slipt the input string to get all user.
+            [self.delegate createUserListWithData:userList];
+        }
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
-    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark RLCreateListUserProtocol
+- (BOOL)checkLimitAccount:(NSArray *)users;
+{
+    int limitNumber = 1;
+    switch (self.package) {
+        case RLPackageTypeFree:
+            break;
+        case RLPackageType1:
+            limitNumber = 5;
+            break;
+        case RLPackageType2:
+            limitNumber = 10;
+            break;
+        case RLPackageType3:
+            limitNumber = 15;
+            break;
+        case RLPackageType4:
+            limitNumber = 10000;
+            break;
+        default:
+            break;
+    }
+    
+    if (users.count > limitNumber) {
+        
+        [self showLimitMessage:limitNumber];
+        return false;
+    }
+    
+    return true;
+}
+
+- (void)showLimitMessage: (int)limitNumber;
+{
+    NSString *msg = [NSString stringWithFormat:@"Current package just allow %d account. Please upgrade for more user", limitNumber];
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Warning"
+                                                                   message:msg
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancel = [UIAlertAction actionWithTitle:@"OK"
+                                                     style:UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction * action) {
+                                                       
+                                                       [alert dismissViewControllerAnimated:YES completion:nil];
+                                                   }];
+    
+    [alert addAction:cancel];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+
 }
 /*
 #pragma mark - Navigation

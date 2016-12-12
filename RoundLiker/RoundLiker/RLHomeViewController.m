@@ -101,7 +101,7 @@
     self.processingPosition = -1;
     self.selectedPosition = -1;
     
-    [self restoreTransaction];
+//    [self restoreTransaction];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -520,6 +520,8 @@
     if ([segue.identifier isEqualToString:@"CreateNewListSegue"]) {
         RLCreateListUserViewController *controller = (RLCreateListUserViewController *)segue.destinationViewController;
         controller.delegate = self;
+        controller.package = self.package;
+        
     }
     else if ([segue.identifier isEqualToString:@"SaveListSegue"]) {
         
@@ -531,7 +533,7 @@
         else {
             controller.save = NO;
             controller.delegate = self;
-
+            controller.package = self.package;
         }
     }
     if ([segue.identifier isEqualToString:@"InAppItemsSegue"]) {
