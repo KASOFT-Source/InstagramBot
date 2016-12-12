@@ -511,8 +511,6 @@
             [self.usersTableView reloadData];
         });
     }
-    
-
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
@@ -920,8 +918,7 @@
 
 - (RLRequestStatus)likeMediaId:(NSString *)mediaId{
     
-//    NSString *strURL = [NSString stringWithFormat:@"https://api.instagram.com/v1/media/%@/likes", mediaId];
-    NSString *strURL = [NSString stringWithFormat:@"https://www.instagram.com/web/likes/%@/like/", mediaId];
+    NSString *strURL = [NSString stringWithFormat:@"https://api.instagram.com/v1/media/%@/likes", mediaId];
     
     NSMutableURLRequest *requestData = [NSMutableURLRequest requestWithURL:
                                         [NSURL URLWithString:strURL]];
@@ -954,6 +951,9 @@
                     if (code == 429) {
                         // Request limited value.
                         return RLRequestStatusFailByLimited;
+                    }
+                    else if (code == 200) {
+                        return RLRequestStatusSuccess;
                     }
                 }
             }
